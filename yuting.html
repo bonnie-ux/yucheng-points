@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>昱珵貼貼完成版（3歲半）</title>
+  <style>
+    :root{
+      --accent:#F8B7C8; /* 粉紅 */
+      --text:#111;
+      --muted:#666;
+      --line:#ddd;
+      --bg:#fff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                   "Noto Sans TC","Microsoft JhengHei", Arial, sans-serif;
+      color:var(--text);
+      background:#f6f6f6;
+    }
+    .app{
+      max-width:1200px;
+      margin:16px auto;
+      padding:16px;
+    }
+    .topbar{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:12px;
+    }
+    .title{
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      min-width:280px;
+    }
+    .title h1{
+      font-size:20px;
+      margin:0;
+      font-weight:800;
+    }
+    .title .sub{
+      font-size:12px;
+      color:var(--muted);
+    }
+    .controls{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    button, .pill, input[type="date"], input[type="text"]{
+      border:1px solid var(--line);
+      background:var(--bg);
+      padding:8px 10px;
+      border-radius:10px;
+      font-size:14px;
+    }
+    button{ cursor:pointer }
+    button.primary{
+      border-color:transparent;
+      background:var(--accent);
+      font-weight:800;
+    }
+    button.danger{
+      border-color:transparent;
+      background:#ffe0e0;
+      font-weight:700;
+    }
+    .pill{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      background:#fff;
+    }
+    .pill strong{font-size:14px}
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap:12px;
+    }
+    .card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-top:4px solid var(--accent);
+      border-radius:14px;
+      padding:14px;
+    }
+    .section-title{
+      display:flex;
+      align-items:baseline;
+      justify-content:space-between;
+      gap:12px;
+      margin:0 0 10px 0;
+    }
+    .section-title h2{
+      font-size:16px;
+      margin:0;
+      font-weight:900;
+    }
+    .section-title .hint{
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    .tasks{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:8px;
+    }
+    .task{
+      display:grid;
+      grid-template-columns: 22px 1fr auto;
+      gap:10px;
+      align-items:start;
+      padding:10px;
+      border:1px solid var(--line);
+      border-radius:12px;
+    }
+    .task input[type="checkbox"]{
+      width:18px;height:18px;margin-top:2px;
+      accent-color: #111;
+    }
+    .task .name{
+      font-weight:800;
+      line-height:1.35;
+    }
+    .task .meta{
+      font-size:12px;
+      color:var(--muted);
+      margin-top:2px;
+      line-height:1.35;
+    }
+    .task .pts{
+      font-weight:900;
+      white-space:nowrap;
+    }
+    .task .pts small{
+      font-weight:700;
+      color:var(--muted);
+    }
+
+    .stickers{
+      border:1px dashed var(--line);
+      border-radius:12px;
+      padding:10px;
+      margin-top:10px;
+      background:#fff;
+    }
+    .stickers-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+    .stickers-title strong{font-weight:900}
+    .sticker-wall{
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      min-height:44px;
+    }
+    .sticker{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:34px;height:34px;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background:#fff;
+      font-size:18px;
+    }
+
+    .log-top{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .log-top .left{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .log-top .right{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:flex-end;
+    }
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:13px;
+    }
+    th, td{
+      border:1px solid var(--line);
+      padding:8px;
+      vertical-align:top;
+    }
+    th{
+      background:#fafafa;
+      text-align:left;
+      font-weight:900;
+    }
+    .row-actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+    .muted{color:var(--muted)}
+    .footer-note{
+      margin-top:10px;
+      font-size:12px;
+      color:var(--muted);
+    }
+
+    /* 列印（A4 橫式） */
+    @media print{
+      body{ background:#fff }
+      .app{ max-width:none; margin:0; padding:0 }
+      .topbar, .controls, .footer-note, .row-actions button, .log-top .right button { display:none !important; }
+      .grid{ grid-template-columns: 1fr 1fr; gap:10px; }
+      .card{ border:1px solid #000; border-top:4px solid #000; border-radius:0; }
+      .task{ border:1px solid #000; border-radius:0; }
+      th, td{ border:1px solid #000; }
+      @page{ size: A4 landscape; margin: 10mm; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="title">
+        <h1>昱珵貼貼完成版（3歲半）</h1>
+        <div class="sub">A4 橫式可列印｜勾選就拿貼貼｜紀錄存在本機瀏覽器（localStorage）</div>
+      </div>
+      <div class="controls">
+        <span class="pill"><span class="muted">今日貼貼</span> <strong id="todayTotal">0</strong></span>
+        <span class="pill"><span class="muted">累積貼貼</span> <strong id="allTotal">0</strong></span>
+        <button class="primary" id="btnSaveDay">存成今日紀錄</button>
+        <button id="btnPrint">列印</button>
+        <button class="danger" id="btnResetToday">清空今日勾選</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- 勾選區 -->
+      <section class="card" aria-label="貼貼任務清單">
+        <div class="section-title">
+          <h2>今天完成什麼（每項＝1張貼貼）</h2>
+          <div class="hint">越小越簡單：完成就好，不追求完美</div>
+        </div>
+
+        <div class="tasks" id="tasks"></div>
+
+        <div class="stickers">
+          <div class="stickers-title">
+            <strong>貼貼牆</strong>
+            <span class="muted">完成 1 項就出現 1 張</span>
+          </div>
+          <div class="sticker-wall" id="stickerWall"></div>
+        </div>
+      </section>
+
+      <!-- 紀錄區 -->
+      <section class="card" aria-label="貼貼紀錄表">
+        <div class="section-title">
+          <h2>貼貼紀錄表</h2>
+          <div class="hint">可整月使用；可列印後簽名</div>
+        </div>
+
+        <div class="log-top">
+          <div class="left">
+            <label class="pill">
+              <span class="muted">日期</span>
+              <input type="date" id="logDate" />
+            </label>
+            <label class="pill">
+              <span class="muted">簽名</span>
+              <input type="text" id="logSign" placeholder="家長簽名/代號" />
+            </label>
+          </div>
+          <div class="right">
+            <button id="btnAddManual">手動新增一筆</button>
+            <button class="danger" id="btnClearLogs">清空全部紀錄</button>
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th style="width:18%">日期</th>
+              <th>完成摘要</th>
+              <th style="width:12%">貼貼數</th>
+              <th style="width:18%">簽名</th>
+              <th style="width:14%">操作</th>
+            </tr>
+          </thead>
+          <tbody id="logBody"></tbody>
+        </table>
+
+        <div class="footer-note">
+          小提醒：此頁資料保存在本機瀏覽器（localStorage）。換電腦/清除瀏覽資料會不見。
+        </div>
+      </section>
+    </div>
+  </div>
+
+<script>
+  const STORAGE_KEY = "yuting_stickers_v1";
+
+  // 昱珵（3歲半）貼貼任務：每項=1貼貼
+  const TASKS = [
+    { id:"a1", name:"刷牙（願意配合）" },
+    { id:"a2", name:"洗手（提醒一次內完成）" },
+    { id:"a3", name:"穿鞋/穿外套（願意自己做）" },
+    { id:"a4", name:"收玩具（一起收也算）" },
+    { id:"a5", name:"上廁所/尿尿（有說就好）" },
+    { id:"a6", name:"吃飯不站起來（30 分鐘內）" },
+    { id:"a7", name:"睡覺快速（提醒一次內上床）" },
+    { id:"a8", name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內）" },
+    { id:"a9", name:"情緒穩定（哭一下可以，能回來就算）" },
+    { id:"a10", name:"主動說謝謝/請（任一個）" },
+    { id:"a11", name:"幫忙小家事（拿尿布/遞東西/擦桌子）" },
+    { id:"a12", name:"好好跟哥哥姊姊相處（不打人）" },
+  ];
+
+  const state = loadState();
+
+  const tasksEl = document.getElementById("tasks");
+  const todayTotalEl = document.getElementById("todayTotal");
+  const allTotalEl = document.getElementById("allTotal");
+  const logBodyEl = document.getElementById("logBody");
+  const stickerWallEl = document.getElementById("stickerWall");
+
+  const logDateEl = document.getElementById("logDate");
+  const logSignEl = document.getElementById("logSign");
+
+  const todayStr = new Date().toISOString().slice(0,10);
+  logDateEl.value = todayStr;
+
+  renderTasks();
+  renderLogs();
+  computeToday();
+  computeAll();
+
+  document.getElementById("btnPrint").addEventListener("click", () => window.print());
+
+  document.getElementById("btnResetToday").addEventListener("click", () => {
+    state.today = { checks:{} };
+    saveState();
+    renderTasks();
+    computeToday();
+  });
+
+  document.getElementById("btnSaveDay").addEventListener("click", () => {
+    const date = logDateEl.value || todayStr;
+    const sign = (logSignEl.value || "").trim();
+    const summary = getCheckedSummary();
+    const stickers = computeToday(true);
+
+    state.logs.unshift({
+      id: crypto.randomUUID(),
+      date,
+      summary,
+      stickers,
+      sign
+    });
+
+    saveState();
+    renderLogs();
+    computeAll();
+  });
+
+  document.getElementById("btnAddManual").addEventListener("click", () => {
+    const date = logDateEl.value || todayStr;
+    const sign = (logSignEl.value || "").trim();
+    state.logs.unshift({
+      id: crypto.randomUUID(),
+      date,
+      summary: "（手動新增）",
+      stickers: 0,
+      sign
+    });
+    saveState();
+    renderLogs();
+    computeAll();
+  });
+
+  document.getElementById("btnClearLogs").addEventListener("click", () => {
+    if (!confirm("確定要清空全部紀錄？")) return;
+    state.logs = [];
+    saveState();
+    renderLogs();
+    computeAll();
+  });
+
+  function renderTasks(){
+    tasksEl.innerHTML = "";
+    TASKS.forEach(t => {
+      const row = document.createElement("div");
+      row.className = "task";
+
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = !!state.today.checks[t.id];
+      cb.addEventListener("change", () => {
+        state.today.checks[t.id] = cb.checked;
+        saveState();
+        computeToday();
+      });
+
+      const mid = document.createElement("div");
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = t.name;
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = "";
+      mid.appendChild(name);
+
+      const pts = document.createElement("div");
+      pts.className = "pts";
+      pts.textContent = `+1 貼貼`;
+
+      row.appendChild(cb);
+      row.appendChild(mid);
+      row.appendChild(pts);
+      tasksEl.appendChild(row);
+    });
+    renderStickerWall( computeToday(true) );
+  }
+
+  function computeToday(returnNumber=false){
+    let total = 0;
+    TASKS.forEach(t => {
+      if (!!state.today.checks[t.id]) total += 1;
+    });
+    todayTotalEl.textContent = total;
+    renderStickerWall(total);
+    return returnNumber ? total : undefined;
+  }
+
+  function computeAll(){
+    const sum = (state.logs || []).reduce((acc, x) => acc + (Number(x.stickers) || 0), 0);
+    allTotalEl.textContent = sum;
+    return sum;
+  }
+
+  function renderStickerWall(count){
+    stickerWallEl.innerHTML = "";
+    const n = Math.max(0, Number(count) || 0);
+    for (let i=0; i<n; i++){
+      const s = document.createElement("div");
+      s.className = "sticker";
+      s.textContent = "🌟";
+      stickerWallEl.appendChild(s);
+    }
+    if (n === 0){
+      const hint = document.createElement("div");
+      hint.className = "muted";
+      hint.style.fontSize = "12px";
+      hint.textContent = "今天先完成一項，就會出現第一張貼貼。";
+      stickerWallEl.appendChild(hint);
+    }
+  }
+
+  function getCheckedSummary(){
+    const parts = [];
+    TASKS.forEach(t => {
+      if (!state.today.checks[t.id]) return;
+      parts.push(t.name);
+    });
+    return parts.join("；");
+  }
+
+  function renderLogs(){
+    logBodyEl.innerHTML = "";
+    if (!state.logs.length){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `<td colspan="5" class="muted">尚無紀錄。右上可「存成今日紀錄」。</td>`;
+      logBodyEl.appendChild(tr);
+      return;
+    }
+
+    state.logs.forEach(log => {
+      const tr = document.createElement("tr");
+
+      const tdDate = document.createElement("td");
+      tdDate.textContent = log.date || "";
+      tr.appendChild(tdDate);
+
+      const tdSum = document.createElement("td");
+      tdSum.textContent = log.summary || "";
+      tr.appendChild(tdSum);
+
+      const tdPts = document.createElement("td");
+      tdPts.textContent = String(log.stickers ?? 0);
+      tr.appendChild(tdPts);
+
+      const tdSign = document.createElement("td");
+      tdSign.textContent = log.sign || "";
+      tr.appendChild(tdSign);
+
+      const tdAct = document.createElement("td");
+      const wrap = document.createElement("div");
+      wrap.className = "row-actions";
+
+      const btnDel = document.createElement("button");
+      btnDel.textContent = "刪除";
+      btnDel.addEventListener("click", () => {
+        state.logs = state.logs.filter(x => x.id !== log.id);
+        saveState();
+        renderLogs();
+        computeAll();
+      });
+
+      wrap.appendChild(btnDel);
+      tdAct.appendChild(wrap);
+      tr.appendChild(tdAct);
+
+      logBodyEl.appendChild(tr);
+    });
+  }
+
+  function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return { today:{checks:{}}, logs:[] };
+      const parsed = JSON.parse(raw);
+      return {
+        today: parsed.today ?? {checks:{}},
+        logs: Array.isArray(parsed.logs) ? parsed.logs : []
+      };
+    }catch{
+      return { today:{checks:{}}, logs:[] };
+    }
+  }
+
+  function saveState(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+</script>
+</body>
+</html>
