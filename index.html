@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>橘時家｜孩子任務入口</title>
+  <style>
+    :root{
+      --bg:#f6f6f6;
+      --card:#fff;
+      --line:#e6e6e6;
+      --text:#111;
+      --muted:#666;
+      --shadow:0 14px 30px rgba(0,0,0,.08);
+
+      --c-eugene:#F7C9A0;   /* 昱呈 淡橘 */
+      --c-orange:#F8B7C8;   /* 昱橙 粉紅 */
+      --c-time:#BFE3FF;     /* 昱澂 粉藍 */
+      --c-yuting:#FFE9A6;   /* 昱珵 粉黃 */
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+                   "Noto Sans TC","Microsoft JhengHei", Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .app{
+      max-width:1100px;
+      margin:20px auto;
+      padding:16px;
+    }
+    h1{
+      margin:0;
+      font-size:22px;
+      font-weight:900;
+    }
+    .sub{
+      margin-top:6px;
+      font-size:13px;
+      color:var(--muted);
+    }
+    .grid{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:14px;
+    }
+    @media (max-width:800px){
+      .grid{ grid-template-columns:1fr; }
+    }
+    a.card{
+      display:block;
+      text-decoration:none;
+      color:inherit;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-top:6px solid var(--accent);
+      border-radius:18px;
+      padding:16px;
+      box-shadow:var(--shadow);
+      transition:transform .12s ease, box-shadow .12s ease;
+    }
+    a.card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 18px 36px rgba(0,0,0,.1);
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .left{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .icon{
+      width:52px;
+      height:52px;
+      border-radius:16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      background:color-mix(in srgb, var(--accent) 30%, #fff);
+      border:1px solid rgba(0,0,0,.06);
+    }
+    .name{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .name strong{
+      font-size:17px;
+      font-weight:900;
+    }
+    .name span{
+      font-size:13px;
+      color:var(--muted);
+    }
+    .enter{
+      font-size:14px;
+      font-weight:900;
+      padding:8px 14px;
+      border-radius:999px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+    }
+    footer{
+      margin-top:20px;
+      font-size:12px;
+      color:var(--muted);
+      text-align:center;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <h1>孩子任務入口</h1>
+    <div class="sub">點名字進去，各自記錄，不會互相影響</div>
+
+    <div class="grid">
+
+      <!-- 昱呈 Eugene -->
+      <a class="card" href="./yucheng-points/" style="--accent:var(--c-eugene);">
+        <div class="row">
+          <div class="left">
+            <div class="icon">🦁</div>
+            <div class="name">
+              <strong>Eugene（林昱呈）</strong>
+              <span>國中｜點數累積制</span>
+            </div>
+          </div>
+          <div class="enter">進入</div>
+        </div>
+      </a>
+
+      <!-- 昱橙 Orange -->
+      <a class="card" href="./yucheng-orange.html" style="--accent:var(--c-orange);">
+        <div class="row">
+          <div class="left">
+            <div class="icon">🍊</div>
+            <div class="name">
+              <strong>Orange（林昱橙）</strong>
+              <span>國小｜點數累積制</span>
+            </div>
+          </div>
+          <div class="enter">進入</div>
+        </div>
+      </a>
+
+      <!-- 昱澂 Time -->
+      <a class="card" href="./time.html" style="--accent:var(--c-time);">
+        <div class="row">
+          <div class="left">
+            <div class="icon">⏳</div>
+            <div class="name">
+              <strong>Time（林昱澂）</strong>
+              <span>一年級｜當日點數</span>
+            </div>
+          </div>
+          <div class="enter">進入</div>
+        </div>
+      </a>
+
+      <!-- 昱珵 小柿子 -->
+      <a class="card" href="./yuting.html" style="--accent:var(--c-yuting);">
+        <div class="row">
+          <div class="left">
+            <div class="icon">🍑</div>
+            <div class="name">
+              <strong>小柿子（林昱珵）</strong>
+              <span>3.5 歲｜貼貼完成版</span>
+            </div>
+          </div>
+          <div class="enter">進入</div>
+        </div>
+      </a>
+
+    </div>
+
+    <footer>
+      本頁僅作為入口導覽｜各孩子資料分開儲存
+    </footer>
+  </div>
+</body>
+</html>
