@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>林昱珵貼貼完成版（3歲半｜貼紙風）</title>
+  <title>林昱珵｜貼貼完成版（3歲半｜貼紙風）</title>
   <style>
     :root{
-      --accent:#F8B7C8; /* 主色：粉紅 */
+      --accent:#F8B7C8; /* 粉紅主色 */
       --text:#111;
       --muted:#666;
       --line:#e7e7e7;
@@ -24,14 +24,13 @@
     }
     .app{ max-width:1200px; margin:16px auto; padding:16px; }
 
-    /* topbar */
     .topbar{
       display:flex; gap:12px; flex-wrap:wrap;
       align-items:center; justify-content:space-between;
       margin-bottom:12px;
     }
     .title{ display:flex; flex-direction:column; gap:4px; min-width:280px; }
-    .title h1{ font-size:20px; margin:0; font-weight:900; }
+    .title h1{ font-size:20px; margin:0; font-weight:1000; }
     .title .sub{ font-size:12px; color:var(--muted); }
 
     .controls{
@@ -49,12 +48,12 @@
     button.primary{
       border-color:transparent;
       background:var(--accent);
-      font-weight:900;
+      font-weight:1000;
     }
     button.danger{
       border-color:transparent;
       background:#ffe0e0;
-      font-weight:800;
+      font-weight:900;
     }
     .pill{
       display:inline-flex; gap:8px; align-items:center;
@@ -80,10 +79,10 @@
       display:flex; align-items:baseline; justify-content:space-between;
       gap:12px; margin:0 0 10px 0;
     }
-    .section-title h2{ font-size:16px; margin:0; font-weight:900; }
+    .section-title h2{ font-size:16px; margin:0; font-weight:1000; }
     .section-title .hint{ font-size:12px; color:var(--muted); }
 
-    /* stickers grid */
+    /* Sticker cards */
     .stickers-grid{
       display:grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -93,13 +92,12 @@
       .grid{ grid-template-columns: 1fr; }
       .stickers-grid{ grid-template-columns: 1fr; }
     }
-
     .sticker{
       position:relative;
       background: var(--paper);
       border:1px solid var(--line);
       border-radius:18px;
-      padding:12px 12px 12px 12px;
+      padding:12px;
       box-shadow: 0 10px 20px rgba(0,0,0,.08);
       overflow:hidden;
       transform: rotate(var(--tilt, -1deg));
@@ -110,8 +108,6 @@
       transform: rotate(var(--tilt, -1deg)) translateY(-2px);
       box-shadow: 0 14px 26px rgba(0,0,0,.10);
     }
-
-    /* corner peel */
     .sticker::after{
       content:"";
       position:absolute;
@@ -122,7 +118,6 @@
       border-radius: 10px;
       pointer-events:none;
     }
-
     .sticker-inner{
       display:grid;
       grid-template-columns: 44px 1fr auto;
@@ -139,12 +134,12 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
     }
     .name{
-      font-weight:900;
+      font-weight:1000;
       line-height:1.25;
       font-size:15px;
     }
     .tag{
-      font-weight:900;
+      font-weight:1000;
       border-radius:999px;
       padding:6px 10px;
       border:1px solid rgba(0,0,0,.08);
@@ -152,16 +147,12 @@
       white-space:nowrap;
       box-shadow: 0 6px 14px rgba(0,0,0,.06);
     }
-
-    /* hidden checkbox */
     .sticker input{
       position:absolute;
       inset:0;
       opacity:0;
       cursor:pointer;
     }
-
-    /* checked style */
     .sticker.is-checked{
       filter: saturate(1.1);
       transform: rotate(0deg) scale(1.01);
@@ -175,15 +166,13 @@
       content:"  ✓";
       font-weight:1000;
     }
-    .pop{
-      animation: pop .22s ease-out;
-    }
+    .pop{ animation: pop .22s ease-out; }
     @keyframes pop{
       from{ transform: rotate(0deg) scale(.98); }
       to  { transform: rotate(0deg) scale(1.01); }
     }
 
-    /* sticker wall */
+    /* Sticker wall */
     .wall{
       margin-top:12px;
       border:1px dashed var(--line);
@@ -212,7 +201,7 @@
     }
     .mini span{ transform: translateY(1px); }
 
-    /* logs */
+    /* Logs */
     .log-top{
       display:flex; gap:8px; flex-wrap:wrap;
       align-items:center; justify-content:space-between;
@@ -227,7 +216,7 @@
     .muted{ color:var(--muted); }
     .footer-note{ margin-top:10px; font-size:12px; color:var(--muted); }
 
-    /* print */
+    /* Print */
     @media print{
       body{ background:#fff }
       .app{ max-width:none; margin:0; padding:0 }
@@ -244,7 +233,7 @@
     <div class="topbar">
       <div class="title">
         <h1>林昱珵｜貼貼完成版（3歲半）</h1>
-        <div class="sub">每完成一項就貼一張｜勾選→貼貼牆出現貼紙｜可存成每日紀錄</div>
+        <div class="sub">每完成一項＝1 張貼貼｜勾選→貼貼牆出現貼紙｜可存成每日紀錄</div>
       </div>
       <div class="controls">
         <span class="pill"><span class="muted">今日貼貼</span> <strong id="todayTotal">0</strong></span>
@@ -319,17 +308,20 @@
 <script>
   const STORAGE_KEY = "yuting_stickers_v1";
 
-  // 每一張貼紙：icon + 背景色 chip + 文字
+  // 你指定的 12 個任務：全部都是「貼貼」(每項=+1)
   const TASKS = [
-    { id:"s1",  name:"吃飯坐好（30 分鐘內）", icon:"🍚", chip:"#FFE7B8" },
-    { id:"s2",  name:"刷牙（願意配合）",       icon:"🪥", chip:"#DFF3FF" },
-    { id:"s3",  name:"洗手（提醒一次內）",     icon:"🧼", chip:"#E6F7E6" },
-    { id:"s4",  name:"收玩具（一起也算）",     icon:"🧸", chip:"#FEE1EA" },
-    { id:"s5",  name:"睡覺上床（提醒一次內）", icon:"🌙", chip:"#E8E2FF" },
-    { id:"s6",  name:"情緒回來（哭一下可以）", icon:"🌈", chip:"#E9FFF1" },
-    // 你指定的「沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內）」也可以放在這裡
-    { id:"s7",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內）", icon:"⭐", chip:"#FFF0F5" },
-    { id:"s8",  name:"幫忙小家事（遞東西/擦桌）", icon:"🧽", chip:"#E8FFF7" },
+    { id:"a1",  name:"刷牙（願意配合）",                     icon:"🪥", chip:"#DFF3FF" },
+    { id:"a2",  name:"洗手（提醒一次內完成）",               icon:"🧼", chip:"#E6F7E6" },
+    { id:"a3",  name:"穿鞋/穿外套（願意自己做）",            icon:"👟", chip:"#FFF0F5" },
+    { id:"a4",  name:"收玩具（一起收也算）",                 icon:"🧸", chip:"#FEE1EA" },
+    { id:"a5",  name:"上廁所/尿尿（有說就好）",              icon:"🚽", chip:"#FFE7B8" },
+    { id:"a6",  name:"吃飯不站起來（30 分鐘內）",            icon:"🍚", chip:"#FFF3D6" },
+    { id:"a7",  name:"睡覺快速（提醒一次內上床）",           icon:"🌙", chip:"#E8E2FF" },
+    { id:"a8",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內）", icon:"⭐", chip:"#FFD9E6" },
+    { id:"a9",  name:"情緒穩定（哭一下可以，能回來就算）",   icon:"🌈", chip:"#E9FFF1" },
+    { id:"a10", name:"主動說謝謝/請（任一個）",              icon:"🙏", chip:"#EAF2FF" },
+    { id:"a11", name:"幫忙小家事（拿尿布/遞東西/擦桌子）",   icon:"🧽", chip:"#E8FFF7" },
+    { id:"a12", name:"好好跟哥哥姊姊相處（不打人）",         icon:"🤝", chip:"#FFF0D8" },
   ];
 
   const state = loadState();
@@ -415,7 +407,7 @@
       if (checked) el.classList.add("is-checked");
 
       el.innerHTML = `
-        <input type="checkbox" ${checked ? "checked" : ""} aria-label="${t.name}">
+        <input type="checkbox" ${checked ? "checked" : ""} aria-label="${escapeHtml(t.name)}">
         <div class="sticker-inner">
           <div class="icon" aria-hidden="true">${t.icon}</div>
           <div class="name">${escapeHtml(t.name)}</div>
@@ -428,10 +420,9 @@
         state.today.checks[t.id] = cb.checked;
         saveState();
 
-        // 視覺狀態
         el.classList.toggle("is-checked", cb.checked);
         el.classList.remove("pop");
-        void el.offsetWidth; // restart animation
+        void el.offsetWidth;
         el.classList.add("pop");
 
         computeToday();
@@ -451,7 +442,7 @@
     return returnNumber ? total : undefined;
   }
 
-  function renderWall(count){
+  function renderWall(){
     wallEl.innerHTML = "";
     const picked = TASKS.filter(t => state.today.checks[t.id]);
 
@@ -495,13 +486,12 @@
 
     state.logs.forEach(log => {
       const tr = document.createElement("tr");
-
       tr.innerHTML = `
         <td>${escapeHtml(log.date || "")}</td>
         <td>${escapeHtml(log.summary || "")}</td>
         <td>${String(log.stickers ?? 0)}</td>
         <td>${escapeHtml(log.sign || "")}</td>
-        <td><div class="row-actions"><button data-del="${log.id}">刪除</button></div></td>
+        <td><div class="row-actions"><button data-del="${escapeHtml(log.id)}">刪除</button></div></td>
       `;
 
       tr.querySelector("button[data-del]").addEventListener("click", () => {
