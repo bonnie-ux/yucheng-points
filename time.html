@@ -6,7 +6,7 @@
   <title>昱澂點數任務制度（一年級）</title>
   <style>
     :root{
-      --accent:#A7D8F5; /* 粉藍（跟昱呈一致的風格改為粉藍） */
+      --accent:#A7D8F5; /* 粉藍 */
       --text:#111;
       --muted:#666;
       --line:#ddd;
@@ -20,189 +20,60 @@
       color:var(--text);
       background:#f6f6f6;
     }
-    .app{
-      max-width:1200px;
-      margin:16px auto;
-      padding:16px;
-    }
+    .app{max-width:1200px;margin:16px auto;padding:16px;}
     .topbar{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
+      display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px;
     }
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width:280px;
+    .title{display:flex;flex-direction:column;gap:4px;min-width:280px;}
+    .title h1{font-size:20px;margin:0;font-weight:700;}
+    .title .sub{font-size:12px;color:var(--muted);line-height:1.4;}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+    button,.pill,input[type="date"],input[type="text"]{
+      border:1px solid var(--line);background:var(--bg);padding:8px 10px;border-radius:10px;font-size:14px;
     }
-    .title h1{
-      font-size:20px;
-      margin:0;
-      font-weight:700;
-    }
-    .title .sub{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .controls{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    button, .pill, input[type="date"], input[type="text"]{
-      border:1px solid var(--line);
-      background:var(--bg);
-      padding:8px 10px;
-      border-radius:10px;
-      font-size:14px;
-    }
-    button{ cursor:pointer }
-    button.primary{
-      border-color:transparent;
-      background:var(--accent);
-      font-weight:700;
-    }
-    button.danger{
-      border-color:transparent;
-      background:#ffe0e0;
-    }
-    .pill{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:8px 10px;
-      background:#fff;
-    }
+    button{cursor:pointer}
+    button.primary{border-color:transparent;background:var(--accent);font-weight:700;}
+    button.danger{border-color:transparent;background:#ffe0e0;}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;background:#fff;}
     .pill strong{font-size:14px}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap:12px;
-    }
+    .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:12px;}
     .card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-top:4px solid var(--accent);
-      border-radius:14px;
-      padding:14px;
+      background:#fff;border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;padding:14px;
     }
-    .section-title{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:12px;
-      margin:0 0 10px 0;
-    }
-    .section-title h2{
-      font-size:16px;
-      margin:0;
-      font-weight:800;
-    }
-    .section-title .hint{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .tasks{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-    }
+    .section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 10px 0;}
+    .section-title h2{font-size:16px;margin:0;font-weight:800;}
+    .section-title .hint{font-size:12px;color:var(--muted);line-height:1.4;}
+    .tasks{display:grid;grid-template-columns:1fr;gap:8px;}
     .task{
-      display:grid;
-      grid-template-columns: 22px 1fr auto;
-      gap:10px;
-      align-items:start;
-      padding:10px;
-      border:1px solid var(--line);
-      border-radius:12px;
+      display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;
+      padding:10px;border:1px solid var(--line);border-radius:12px;
     }
-    .task input[type="checkbox"]{
-      width:18px;height:18px;margin-top:2px;
-      accent-color: #111;
-    }
-    .task .name{
-      font-weight:700;
-      line-height:1.35;
-    }
-    .task .meta{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:2px;
-      line-height:1.35;
-    }
-    .task .pts{
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .task .pts small{
-      font-weight:700;
-      color:var(--muted);
-    }
+    .task input[type="checkbox"]{width:18px;height:18px;margin-top:2px;accent-color:#111;}
+    .task .name{font-weight:800;line-height:1.35;}
+    .task .zhuyin{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35;}
+    .task .meta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35;}
+    .task .pts{font-weight:900;white-space:nowrap;}
+    .task .pts small{font-weight:700;color:var(--muted);}
 
-    .log-top{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:10px;
-    }
-    .log-top .left{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .log-top .right{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-    th, td{
-      border:1px solid var(--line);
-      padding:8px;
-      vertical-align:top;
-    }
-    th{
-      background:#fafafa;
-      text-align:left;
-      font-weight:800;
-    }
-    .row-actions{
-      display:flex;
-      gap:6px;
-      flex-wrap:wrap;
-    }
+    .log-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .log-top .left{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+    .log-top .right{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th,td{border:1px solid var(--line);padding:8px;vertical-align:top;}
+    th{background:#fafafa;text-align:left;font-weight:800;}
+    .row-actions{display:flex;gap:6px;flex-wrap:wrap;}
     .muted{color:var(--muted)}
-    .footer-note{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-    }
+    .footer-note{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.4;}
 
-    /* 列印（A4 橫式） */
     @media print{
-      body{ background:#fff }
-      .app{ max-width:none; margin:0; padding:0 }
-      .topbar, .controls, .footer-note, .row-actions button, .log-top .right button { display:none !important; }
-      .grid{ grid-template-columns: 1fr 1fr; gap:10px; }
-      .card{ border:1px solid #000; border-top:4px solid #000; border-radius:0; }
-      .task{ border:1px solid #000; border-radius:0; }
-      th, td{ border:1px solid #000; }
-      @page{ size: A4 landscape; margin: 10mm; }
+      body{background:#fff}
+      .app{max-width:none;margin:0;padding:0}
+      .topbar,.controls,.footer-note,.row-actions button,.log-top .right button{display:none !important;}
+      .grid{grid-template-columns:1fr 1fr;gap:10px;}
+      .card{border:1px solid #000;border-top:4px solid #000;border-radius:0;}
+      .task{border:1px solid #000;border-radius:0;}
+      th,td{border:1px solid #000;}
+      @page{size:A4 landscape;margin:10mm;}
     }
   </style>
 </head>
@@ -211,7 +82,7 @@
     <div class="topbar">
       <div class="title">
         <h1>昱澂點數任務制度（一年級）</h1>
-        <div class="sub">A4 橫式可列印｜勾選後自動算點數｜紀錄存在本機瀏覽器</div>
+        <div class="sub">A4 橫式可列印｜勾選後自動算點數｜紀錄存在本機瀏覽器<br/>（ㄉㄧㄢˇ ㄐㄧˋ ㄗㄞˋ ㄓㄜˋ ㄧˋ ㄊㄞˊ ㄉㄧㄢˋ ㄋㄠˇ ㄌㄧˇ ㄘㄨㄣˊ ㄓㄨˋ）</div>
       </div>
       <div class="controls">
         <span class="pill"><span class="muted">今日合計</span> <strong id="todayTotal">0</strong> <span class="muted">點</span></span>
@@ -223,16 +94,14 @@
     </div>
 
     <div class="grid">
-      <!-- 規則/勾選區 -->
       <section class="card" aria-label="任務與點數規則">
         <div class="section-title">
           <h2>任務＋點數規則（固定）</h2>
-          <div class="hint">每一項可勾選計分；「家事/特別任務」可自訂點數</div>
+          <div class="hint">ㄨㄛˇ ㄗㄨㄛˋ ㄉㄠˋ ㄌㄜ˙ ㄐㄧㄡˋ ㄎㄜˇ ㄧˇ ㄉㄜˊ ㄉㄧㄢˇ ㄕㄨˋ<br/>「家事/特別任務」可自訂點數（ㄎㄜˇ ㄧˇ ㄗˋ ㄐㄧˇ ㄒㄧㄝˇ ㄉㄧㄢˇ ㄕㄨˋ）</div>
         </div>
         <div class="tasks" id="tasks"></div>
       </section>
 
-      <!-- 紀錄區 -->
       <section class="card" aria-label="點數紀錄表">
         <div class="section-title">
           <h2>點數紀錄表</h2>
@@ -277,22 +146,21 @@
   </div>
 
 <script>
-  // 昱澂專用 key（避免跟其他孩子互相影響）
   const STORAGE_KEY = "time_points_v1";
 
-  // 一年級（昱澂）規則：含「牛奶 +1」✅
+  // 昱澂（一年級）— 全部任務附注音
   const BASE_TASKS = [
-    { id:"t1",  name:"作業完成（不拖延）", pts:2 },
-    { id:"t2",  name:"運動 300 下", pts:2 },
-    { id:"t3",  name:"喝牛奶 500cc", pts:1 }, // ✅ 新增這一項
-    { id:"t4",  name:"吃飯不站起來（30 分鐘內）", pts:1 },
-    { id:"t5",  name:"睡覺快速（提醒一次內上床）", pts:1 },
-    { id:"t6",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）", pts:2 },
-    { id:"t7",  name:"閱讀/複習 10–15 分鐘", pts:1 },
-    { id:"t8",  name:"整理書包/書桌（一起整理也算）", pts:1 },
-    { id:"t9",  name:"情緒穩定（不頂嘴/不鬧脾氣一天）", pts:1 },
-    { id:"t10", name:"主動幫忙家事一項", pts:"1-2" },
-    { id:"t11", name:"特別任務（家長指定）", pts:"1-5" }
+    { id:"t1",  name:"作業完成（不拖延）", zhuyin:"ㄗㄨㄛˋ ㄧㄝˋ ㄨㄢˊ ㄔㄥˊ ㄅㄨˋ ㄊㄨㄛ ㄧㄢˊ", pts:2 },
+    { id:"t2",  name:"運動 300 下",         zhuyin:"ㄩㄣˋ ㄉㄨㄥˋ ㄙㄢ ㄅㄞˇ ㄒㄧㄚˋ", pts:2 },
+    { id:"t3",  name:"喝牛奶 500cc",        zhuyin:"ㄏㄜ ㄋㄧㄡˊ ㄋㄞˇ ㄨˇ ㄅㄞˇ ㄒㄧ ㄒㄧ", pts:1 },
+    { id:"t4",  name:"吃飯不站起來（30 分鐘內）", zhuyin:"ㄔ ㄈㄢˋ ㄅㄨˋ ㄓㄢˋ ㄑㄧˇ ㄌㄞˊ ㄙㄢ ㄕˊ ㄈㄣ ㄓㄨㄥ ㄋㄟˋ", pts:1 },
+    { id:"t5",  name:"睡覺快速（提醒一次內上床）", zhuyin:"ㄕㄨㄟˋ ㄐㄧㄠˋ ㄎㄨㄞˋ ㄙㄨˋ ㄊㄧˊ ㄒㄧㄥˇ ㄧ ㄘˋ ㄋㄟˋ ㄕㄤˋ ㄔㄨㄤˊ", pts:1 },
+    { id:"t6",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）", zhuyin:"ㄔㄨㄥ ㄅㄧˊ ㄗ˙ ㄕㄨㄚ ㄧㄚˊ ㄅㄞˋ ㄅㄞˋ ㄏㄨㄢˋ ㄕㄨㄟˋ ㄧ ㄙㄢ ㄕˊ ㄈㄣ ㄓㄨㄥ ㄋㄟˋ ㄨㄢˊ ㄔㄥˊ", pts:2 },
+    { id:"t7",  name:"閱讀/複習 10–15 分鐘", zhuyin:"ㄩㄝˋ ㄉㄨˊ ㄈㄨˋ ㄒㄧˊ ㄕˊ ㄈㄣ ㄉㄠˋ ㄕˊ ㄨˇ ㄈㄣ ㄓㄨㄥ", pts:1 },
+    { id:"t8",  name:"整理書包/書桌（一起整理也算）", zhuyin:"ㄓㄥˇ ㄌㄧˇ ㄕㄨ ㄅㄠ ㄕㄨ ㄓㄨㄛ ㄧˋ ㄑㄧˇ ㄓㄥˇ ㄌㄧˇ ㄝˇ ㄙㄨㄢˋ", pts:1 },
+    { id:"t9",  name:"情緒穩定（不頂嘴/不鬧脾氣一天）", zhuyin:"ㄑㄧㄥˊ ㄒㄩˋ ㄨㄣˇ ㄉㄧㄥˋ ㄅㄨˋ ㄉㄧㄥˇ ㄗㄨㄟˇ ㄅㄨˋ ㄋㄠˋ ㄆㄧˊ ㄑㄧˋ ㄧ ㄊㄧㄢ", pts:1 },
+    { id:"t10", name:"主動幫忙家事一項", zhuyin:"ㄓㄨˇ ㄉㄨㄥˋ ㄅㄤ ㄇㄤˊ ㄐㄧㄚ ㄕˋ ㄧ ㄒㄧㄤˋ", pts:"1-2" },
+    { id:"t11", name:"特別任務（家長指定）", zhuyin:"ㄊㄜˋ ㄅㄧㄝˊ ㄖㄣˋ ㄨˋ ㄐㄧㄚ ㄓㄤˇ ㄓˇ ㄉㄧㄥˋ", pts:"1-5" }
   ];
 
   const state = loadState();
@@ -378,14 +246,24 @@
       });
 
       const mid = document.createElement("div");
+
       const name = document.createElement("div");
       name.className = "name";
       name.textContent = t.name;
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      meta.textContent = isCustom ? "此項可自訂點數" : "";
+
+      const zy = document.createElement("div");
+      zy.className = "zhuyin";
+      zy.textContent = t.zhuyin || "";
+
       mid.appendChild(name);
-      if (isCustom) mid.appendChild(meta);
+      if (t.zhuyin) mid.appendChild(zy);
+
+      if (isCustom){
+        const meta = document.createElement("div");
+        meta.className = "meta";
+        meta.textContent = "（此項可自訂點數）";
+        mid.appendChild(meta);
+      }
 
       const pts = document.createElement("div");
       pts.className = "pts";
