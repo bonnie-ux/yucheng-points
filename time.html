@@ -6,7 +6,7 @@
   <title>昱澂點數任務制度（一年級）</title>
   <style>
     :root{
-      --accent:#A7D8F5; /* 粉藍 */
+      --accent:#A7D8F5; /* 粉藍（跟昱呈一致的風格改為粉藍） */
       --text:#111;
       --muted:#666;
       --line:#ddd;
@@ -227,7 +227,7 @@
       <section class="card" aria-label="任務與點數規則">
         <div class="section-title">
           <h2>任務＋點數規則（固定）</h2>
-          <div class="hint">每一項可勾選計分；「特別任務」可自行填點數</div>
+          <div class="hint">每一項可勾選計分；「家事/特別任務」可自訂點數</div>
         </div>
         <div class="tasks" id="tasks"></div>
       </section>
@@ -277,27 +277,22 @@
   </div>
 
 <script>
-  // ✅ 昱澂專用：請用不同 key，避免跟其他孩子互相蓋掉
-  const STORAGE_KEY = "yucheng_points_yuchen_v1";
+  // 昱澂專用 key（避免跟其他孩子互相影響）
+  const STORAGE_KEY = "time_points_v1";
 
-  // 昱澂規則（固定）
+  // 一年級（昱澂）規則：含「牛奶 +1」✅
   const BASE_TASKS = [
-    // 生活核心
-    { id:"t1",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）", pts:2 },
-    { id:"t2",  name:"吃飯不站起來（30 分鐘內）", pts:1 },
-    { id:"t3",  name:"睡覺快速（提醒一次內上床）", pts:1 },
-
-    // 學習／日常表現
-    { id:"t4",  name:"作業或學校練習完成（注音／寫字／數學）", pts:2 },
-    { id:"t5",  name:"閱讀或聽故事 10 分鐘（能坐好）", pts:1 },
-    { id:"t6",  name:"運動 10 分鐘以上（跑／跳／球都算）", pts:1 },
-
-    // 行為與生活加分（彈性）
-    { id:"t7",  name:"情緒穩定、不大哭鬧（提醒後可收）", pts:1 },
-    { id:"t8",  name:"主動幫忙家事一件（收玩具／收碗）", pts:1 },
-
-    // 自訂
-    { id:"t9",  name:"特別任務（家長指定）", pts:"1-3" },
+    { id:"t1",  name:"作業完成（不拖延）", pts:2 },
+    { id:"t2",  name:"運動 300 下", pts:2 },
+    { id:"t3",  name:"喝牛奶 500cc", pts:1 }, // ✅ 新增這一項
+    { id:"t4",  name:"吃飯不站起來（30 分鐘內）", pts:1 },
+    { id:"t5",  name:"睡覺快速（提醒一次內上床）", pts:1 },
+    { id:"t6",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）", pts:2 },
+    { id:"t7",  name:"閱讀/複習 10–15 分鐘", pts:1 },
+    { id:"t8",  name:"整理書包/書桌（一起整理也算）", pts:1 },
+    { id:"t9",  name:"情緒穩定（不頂嘴/不鬧脾氣一天）", pts:1 },
+    { id:"t10", name:"主動幫忙家事一項", pts:"1-2" },
+    { id:"t11", name:"特別任務（家長指定）", pts:"1-5" }
   ];
 
   const state = loadState();
@@ -310,7 +305,6 @@
   const logDateEl = document.getElementById("logDate");
   const logSignEl = document.getElementById("logSign");
 
-  // 預設日期為今天
   const todayStr = new Date().toISOString().slice(0,10);
   logDateEl.value = todayStr;
 
@@ -335,7 +329,7 @@
     const points = computeTotal(true);
 
     state.logs.unshift({
-      id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+      id: crypto.randomUUID(),
       date,
       summary,
       points,
@@ -350,7 +344,7 @@
     const date = logDateEl.value || todayStr;
     const sign = (logSignEl.value || "").trim();
     state.logs.unshift({
-      id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
+      id: crypto.randomUUID(),
       date,
       summary: "（手動新增）",
       points: 0,
@@ -406,7 +400,7 @@
         label.innerHTML = `<small>+（自訂）</small>`;
         const input = document.createElement("input");
         input.type = "text";
-        input.placeholder = t.pts; // "1-3"
+        input.placeholder = t.pts;
         input.value = (state.today.custom[t.id] ?? "");
         input.style.width = "90px";
         input.addEventListener("input", () => {
