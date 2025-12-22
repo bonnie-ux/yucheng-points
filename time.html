@@ -21,9 +21,7 @@
       background:#f6f6f6;
     }
     .app{max-width:1200px;margin:16px auto;padding:16px;}
-    .topbar{
-      display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px;
-    }
+    .topbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px;}
     .title{display:flex;flex-direction:column;gap:4px;min-width:280px;}
     .title h1{font-size:20px;margin:0;font-weight:700;}
     .title .sub{font-size:12px;color:var(--muted);line-height:1.4;}
@@ -37,9 +35,7 @@
     .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;background:#fff;}
     .pill strong{font-size:14px}
     .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:12px;}
-    .card{
-      background:#fff;border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;padding:14px;
-    }
+    .card{background:#fff;border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;padding:14px;}
     .section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 10px 0;}
     .section-title h2{font-size:16px;margin:0;font-weight:800;}
     .section-title .hint{font-size:12px;color:var(--muted);line-height:1.4;}
@@ -53,7 +49,19 @@
     .task .zhuyin{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35;}
     .task .meta{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35;}
     .task .pts{font-weight:900;white-space:nowrap;}
+    .task .pts.negative{color:#b91c1c;}
     .task .pts small{font-weight:700;color:var(--muted);}
+    .divider{
+      margin:12px 0 8px;
+      border-top:1px dashed var(--line);
+      padding-top:10px;
+      color:var(--muted);
+      font-size:12px;
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
 
     .log-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px;}
     .log-top .left{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
@@ -97,9 +105,23 @@
       <section class="card" aria-label="任務與點數規則">
         <div class="section-title">
           <h2>任務＋點數規則（固定）</h2>
-          <div class="hint">ㄨㄛˇ ㄗㄨㄛˋ ㄉㄠˋ ㄌㄜ˙ ㄐㄧㄡˋ ㄎㄜˇ ㄧˇ ㄉㄜˊ ㄉㄧㄢˇ ㄕㄨˋ<br/>「家事/特別任務」可自訂點數（ㄎㄜˇ ㄧˇ ㄗˋ ㄐㄧˇ ㄒㄧㄝˇ ㄉㄧㄢˇ ㄕㄨˋ）</div>
+          <div class="hint">
+            ㄨㄛˇ ㄗㄨㄛˋ ㄉㄠˋ ㄌㄜ˙ ㄐㄧㄡˋ ㄉㄜˊ ㄉㄧㄢˇ<br/>
+            「家事/特別任務」可自訂點數
+          </div>
         </div>
-        <div class="tasks" id="tasks"></div>
+
+        <div class="divider">
+          <div><strong>加分（做到了就加點）</strong></div>
+          <div>ㄗㄨㄛˋ ㄉㄠˋ ㄌㄜ˙ ㄐㄧㄡˋ ㄐㄧㄚ ㄉㄧㄢˇ</div>
+        </div>
+        <div class="tasks" id="tasksPos"></div>
+
+        <div class="divider">
+          <div><strong>扣分（做了就扣點）</strong></div>
+          <div>ㄗㄨㄛˋ ㄌㄜ˙ ㄐㄧㄡˋ ㄎㄡˋ ㄉㄧㄢˇ</div>
+        </div>
+        <div class="tasks" id="tasksNeg"></div>
       </section>
 
       <section class="card" aria-label="點數紀錄表">
@@ -146,26 +168,36 @@
   </div>
 
 <script>
-  const STORAGE_KEY = "time_points_v1";
+  const STORAGE_KEY = "time_points_v2"; // v2：加入扣分
 
-  // 昱澂（一年級）— 全部任務附注音
-  const BASE_TASKS = [
-    { id:"t1",  name:"作業完成（不拖延）", zhuyin:"ㄗㄨㄛˋ ㄧㄝˋ ㄨㄢˊ ㄔㄥˊ ㄅㄨˋ ㄊㄨㄛ ㄧㄢˊ", pts:2 },
-    { id:"t2",  name:"運動 300 下",         zhuyin:"ㄩㄣˋ ㄉㄨㄥˋ ㄙㄢ ㄅㄞˇ ㄒㄧㄚˋ", pts:2 },
-    { id:"t3",  name:"喝牛奶 500cc",        zhuyin:"ㄏㄜ ㄋㄧㄡˊ ㄋㄞˇ ㄨˇ ㄅㄞˇ ㄒㄧ ㄒㄧ", pts:1 },
-    { id:"t4",  name:"吃飯不站起來（30 分鐘內）", zhuyin:"ㄔ ㄈㄢˋ ㄅㄨˋ ㄓㄢˋ ㄑㄧˇ ㄌㄞˊ ㄙㄢ ㄕˊ ㄈㄣ ㄓㄨㄥ ㄋㄟˋ", pts:1 },
-    { id:"t5",  name:"睡覺快速（提醒一次內上床）", zhuyin:"ㄕㄨㄟˋ ㄐㄧㄠˋ ㄎㄨㄞˋ ㄙㄨˋ ㄊㄧˊ ㄒㄧㄥˇ ㄧ ㄘˋ ㄋㄟˋ ㄕㄤˋ ㄔㄨㄤˊ", pts:1 },
-    { id:"t6",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）", zhuyin:"ㄔㄨㄥ ㄅㄧˊ ㄗ˙ ㄕㄨㄚ ㄧㄚˊ ㄅㄞˋ ㄅㄞˋ ㄏㄨㄢˋ ㄕㄨㄟˋ ㄧ ㄙㄢ ㄕˊ ㄈㄣ ㄓㄨㄥ ㄋㄟˋ ㄨㄢˊ ㄔㄥˊ", pts:2 },
-    { id:"t7",  name:"閱讀/複習 10–15 分鐘", zhuyin:"ㄩㄝˋ ㄉㄨˊ ㄈㄨˋ ㄒㄧˊ ㄕˊ ㄈㄣ ㄉㄠˋ ㄕˊ ㄨˇ ㄈㄣ ㄓㄨㄥ", pts:1 },
-    { id:"t8",  name:"整理書包/書桌（一起整理也算）", zhuyin:"ㄓㄥˇ ㄌㄧˇ ㄕㄨ ㄅㄠ ㄕㄨ ㄓㄨㄛ ㄧˋ ㄑㄧˇ ㄓㄥˇ ㄌㄧˇ ㄝˇ ㄙㄨㄢˋ", pts:1 },
-    { id:"t9",  name:"情緒穩定（不頂嘴/不鬧脾氣一天）", zhuyin:"ㄑㄧㄥˊ ㄒㄩˋ ㄨㄣˇ ㄉㄧㄥˋ ㄅㄨˋ ㄉㄧㄥˇ ㄗㄨㄟˇ ㄅㄨˋ ㄋㄠˋ ㄆㄧˊ ㄑㄧˋ ㄧ ㄊㄧㄢ", pts:1 },
-    { id:"t10", name:"主動幫忙家事一項", zhuyin:"ㄓㄨˇ ㄉㄨㄥˋ ㄅㄤ ㄇㄤˊ ㄐㄧㄚ ㄕˋ ㄧ ㄒㄧㄤˋ", pts:"1-2" },
-    { id:"t11", name:"特別任務（家長指定）", zhuyin:"ㄊㄜˋ ㄅㄧㄝˊ ㄖㄣˋ ㄨˋ ㄐㄧㄚ ㄓㄤˇ ㄓˇ ㄉㄧㄥˋ", pts:"1-5" }
+  // 加分任務（+）
+  const POS_TASKS = [
+    { id:"p1",  name:"作業完成（不拖延）", zhuyin:"ㄗㄨㄛˋ ㄧㄝˋ ㄨㄢˊ ㄔㄥˊ ㄅㄨˋ ㄊㄨㄛ ㄧㄢˊ", pts:2 },
+    { id:"p2",  name:"運動 300 下",         zhuyin:"ㄩㄣˋ ㄉㄨㄥˋ ㄙㄢ ㄅㄞˇ ㄒㄧㄚˋ", pts:2 },
+    { id:"p3",  name:"喝牛奶 500cc",        zhuyin:"ㄏㄜ ㄋㄧㄡˊ ㄋㄞˇ ㄨˇ ㄅㄞˇ ㄒㄧ ㄒㄧ", pts:1 },
+    { id:"p4",  name:"吃飯不站起來（30 分鐘內）", zhuyin:"ㄔ ㄈㄢˋ ㄅㄨˋ ㄓㄢˋ ㄑㄧˇ ㄌㄞˊ ㄙㄢ ㄕˊ ㄈㄣ ㄓㄨㄥ ㄋㄟˋ", pts:1 },
+    { id:"p5",  name:"睡覺快速（提醒一次內上床）", zhuyin:"ㄕㄨㄟˋ ㄐㄧㄠˋ ㄎㄨㄞˋ ㄙㄨˋ ㄊㄧˊ ㄒㄧㄥˇ ㄧ ㄘˋ ㄋㄟˋ ㄕㄤˋ ㄔㄨㄤˊ", pts:1 },
+    { id:"p6",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）", zhuyin:"ㄔㄨㄥ ㄅㄧˊ ㄗ˙ ㄕㄨㄚ ㄧㄚˊ ㄅㄞˋ ㄅㄞˋ ㄏㄨㄢˋ ㄕㄨㄟˋ ㄧ ㄙㄢ ㄕˊ ㄈㄣ ㄓㄨㄥ ㄋㄟˋ ㄨㄢˊ ㄔㄥˊ", pts:2 },
+    { id:"p7",  name:"閱讀/複習 10–15 分鐘", zhuyin:"ㄩㄝˋ ㄉㄨˊ ㄈㄨˋ ㄒㄧˊ ㄕˊ ㄈㄣ ㄉㄠˋ ㄕˊ ㄨˇ ㄈㄣ ㄓㄨㄥ", pts:1 },
+    { id:"p8",  name:"整理書包/書桌（一起整理也算）", zhuyin:"ㄓㄥˇ ㄌㄧˇ ㄕㄨ ㄅㄠ ㄕㄨ ㄓㄨㄛ ㄧˋ ㄑㄧˇ ㄓㄥˇ ㄌㄧˇ ㄝˇ ㄙㄨㄢˋ", pts:1 },
+    { id:"p9",  name:"情緒穩定（不頂嘴/不鬧脾氣一天）", zhuyin:"ㄑㄧㄥˊ ㄒㄩˋ ㄨㄣˇ ㄉㄧㄥˋ ㄅㄨˋ ㄉㄧㄥˇ ㄗㄨㄟˇ ㄅㄨˋ ㄋㄠˋ ㄆㄧˊ ㄑㄧˋ ㄧ ㄊㄧㄢ", pts:1 },
+    { id:"p10", name:"主動幫忙家事一項", zhuyin:"ㄓㄨˇ ㄉㄨㄥˋ ㄅㄤ ㄇㄤˊ ㄐㄧㄚ ㄕˋ ㄧ ㄒㄧㄤˋ", pts:"1-2" },
+    { id:"p11", name:"特別任務（家長指定）", zhuyin:"ㄊㄜˋ ㄅㄧㄝˊ ㄖㄣˋ ㄨˋ ㄐㄧㄚ ㄓㄤˇ ㄓˇ ㄉㄧㄥˋ", pts:"1-5" }
+  ];
+
+  // 扣分任務（-）— 勾到就扣點
+  const NEG_TASKS = [
+    { id:"n1", name:"吃飯一直站起來/亂跑", zhuyin:"ㄔ ㄈㄢˋ ㄧ ㄓˊ ㄓㄢˋ ㄑㄧˇ ㄌㄞˊ ㄌㄨㄢˋ ㄆㄠˇ", pts:-1 },
+    { id:"n2", name:"頂嘴/大聲回嘴",       zhuyin:"ㄉㄧㄥˇ ㄗㄨㄟˇ ㄉㄚˋ ㄕㄥ ㄏㄨㄟˊ ㄗㄨㄟˇ", pts:-1 },
+    { id:"n3", name:"打人/推人/丟東西",    zhuyin:"ㄉㄚˇ ㄖㄣˊ ㄊㄨㄟ ㄖㄣˊ ㄉㄧㄡ ㄉㄨㄥ ㄒㄧ", pts:-2 },
+    { id:"n4", name:"不配合刷牙/洗鼻子",   zhuyin:"ㄅㄨˋ ㄆㄟˋ ㄏㄜˊ ㄕㄨㄚ ㄧㄚˊ ㄒㄧˇ ㄅㄧˊ ㄗ˙", pts:-1 },
+    { id:"n5", name:"哭鬧很久（超過 5 分鐘）", zhuyin:"ㄎㄨ ㄋㄠˋ ㄏㄣˇ ㄐㄧㄡˇ ㄔㄠ ㄍㄨㄛˋ ㄨˇ ㄈㄣ ㄓㄨㄥ", pts:-1 }
   ];
 
   const state = loadState();
 
-  const tasksEl = document.getElementById("tasks");
+  const tasksPosEl = document.getElementById("tasksPos");
+  const tasksNegEl = document.getElementById("tasksNeg");
   const todayTotalEl = document.getElementById("todayTotal");
   const allTotalEl = document.getElementById("allTotal");
   const logBodyEl = document.getElementById("logBody");
@@ -176,7 +208,7 @@
   const todayStr = new Date().toISOString().slice(0,10);
   logDateEl.value = todayStr;
 
-  renderTasks();
+  renderAllTasks();
   renderLogs();
   computeTotal();
   computeAllTotal();
@@ -186,7 +218,7 @@
   document.getElementById("btnResetToday").addEventListener("click", () => {
     state.today = { checks:{}, custom:{} };
     saveState();
-    renderTasks();
+    renderAllTasks();
     computeTotal();
   });
 
@@ -229,9 +261,15 @@
     renderLogs();
   });
 
-  function renderTasks(){
-    tasksEl.innerHTML = "";
-    BASE_TASKS.forEach(t => {
+  function renderAllTasks(){
+    tasksPosEl.innerHTML = "";
+    tasksNegEl.innerHTML = "";
+    renderTaskList(tasksPosEl, POS_TASKS);
+    renderTaskList(tasksNegEl, NEG_TASKS);
+  }
+
+  function renderTaskList(container, list){
+    list.forEach(t => {
       const isCustom = (typeof t.pts === "string");
       const row = document.createElement("div");
       row.className = "task";
@@ -269,7 +307,9 @@
       pts.className = "pts";
 
       if (!isCustom){
-        pts.textContent = `+${t.pts} 點`;
+        const isNeg = (typeof t.pts === "number" && t.pts < 0);
+        if (isNeg) pts.classList.add("negative");
+        pts.textContent = `${t.pts > 0 ? "+" : ""}${t.pts} 點`;
       } else {
         const wrap = document.createElement("div");
         wrap.style.display = "grid";
@@ -294,22 +334,30 @@
       row.appendChild(cb);
       row.appendChild(mid);
       row.appendChild(pts);
-      tasksEl.appendChild(row);
+      container.appendChild(row);
     });
   }
 
   function computeTotal(returnNumber=false){
     let total = 0;
-    BASE_TASKS.forEach(t => {
+
+    // 正向
+    POS_TASKS.forEach(t => {
       if (!state.today.checks[t.id]) return;
-      if (typeof t.pts === "number"){
-        total += t.pts;
-      } else {
+      if (typeof t.pts === "number") total += t.pts;
+      else{
         const raw = (state.today.custom[t.id] ?? "").trim();
         const n = parseInt(raw, 10);
         if (!Number.isNaN(n) && n >= 0) total += n;
       }
     });
+
+    // 負向
+    NEG_TASKS.forEach(t => {
+      if (!state.today.checks[t.id]) return;
+      if (typeof t.pts === "number") total += t.pts; // 這裡是負數會扣掉
+    });
+
     todayTotalEl.textContent = total;
     return returnNumber ? total : undefined;
   }
@@ -322,17 +370,25 @@
 
   function getCheckedSummary(){
     const parts = [];
-    BASE_TASKS.forEach(t => {
+    const addPart = (t, ptsShown) => parts.push(`${t.name}(${ptsShown > 0 ? "+" : ""}${ptsShown})`);
+
+    POS_TASKS.forEach(t => {
       if (!state.today.checks[t.id]) return;
       if (typeof t.pts === "number"){
-        parts.push(`${t.name}(+${t.pts})`);
+        addPart(t, t.pts);
       } else {
         const raw = (state.today.custom[t.id] ?? "").trim();
         const n = parseInt(raw, 10);
-        const shown = (!Number.isNaN(n) && n>=0) ? n : t.pts;
-        parts.push(`${t.name}(+${shown})`);
+        const shown = (!Number.isNaN(n) && n>=0) ? n : 0;
+        addPart(t, shown);
       }
     });
+
+    NEG_TASKS.forEach(t => {
+      if (!state.today.checks[t.id]) return;
+      addPart(t, t.pts);
+    });
+
     return parts.join("；");
   }
 
