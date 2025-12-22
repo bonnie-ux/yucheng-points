@@ -220,6 +220,7 @@
       </div>
       <div class="controls">
         <span class="pill"><span class="muted">今日合計</span> <strong id="todayTotal">0</strong> <span class="muted">點</span></span>
+        <span class="pill"><span class="muted">累積總點數</span> <strong id="allTotal">0</strong> <span class="muted">點</span></span>
         <button class="primary" id="btnSaveDay">存成今日紀錄</button>
         <button id="btnPrint">列印</button>
         <button class="danger" id="btnResetToday">清空今日勾選</button>
@@ -305,6 +306,7 @@
 
   const tasksEl = document.getElementById("tasks");
   const todayTotalEl = document.getElementById("todayTotal");
+  const allTotalEl = document.getElementById("allTotal");
   const logBodyEl = document.getElementById("logBody");
 
   const logDateEl = document.getElementById("logDate");
@@ -317,6 +319,7 @@
   renderTasks();
   renderLogs();
   computeTotal();
+  computeAllTotal();
 
   document.getElementById("btnPrint").addEventListener("click", () => window.print());
 
@@ -333,7 +336,6 @@
     const summary = getCheckedSummary();
     const points = computeTotal(true);
 
-    // 規則：若沒勾任何，仍可存，但摘要空
     state.logs.unshift({
       id: crypto.randomUUID(),
       date,
@@ -399,7 +401,6 @@
       if (!isCustom){
         pts.textContent = `+${t.pts} 點`;
       } else {
-        // 自訂點數輸入
         const wrap = document.createElement("div");
         wrap.style.display = "grid";
         wrap.style.gap = "6px";
@@ -434,7 +435,6 @@
       if (typeof t.pts === "number"){
         total += t.pts;
       } else {
-        // 自訂點數：允許 "2" 或 "1-2" 中填 "1" 或 "2"
         const raw = (state.today.custom[t.id] ?? "").trim();
         const n = parseInt(raw, 10);
         if (!Number.isNaN(n) && n >= 0) total += n;
@@ -442,6 +442,12 @@
     });
     todayTotalEl.textContent = total;
     return returnNumber ? total : undefined;
+  }
+
+  function computeAllTotal(){
+    const sum = (state.logs || []).reduce((acc, x) => acc + (Number(x.points) || 0), 0);
+    allTotalEl.textContent = sum;
+    return sum;
   }
 
   function getCheckedSummary(){
@@ -466,6 +472,7 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `<td colspan="5" class="muted">尚無紀錄。右上可「存成今日紀錄」。</td>`;
       logBodyEl.appendChild(tr);
+      computeAllTotal();
       return;
     }
     state.logs.forEach(log => {
@@ -505,6 +512,7 @@
 
       logBodyEl.appendChild(tr);
     });
+    computeAllTotal();
   }
 
   function loadState(){
