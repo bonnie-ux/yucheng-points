@@ -3,14 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>昱珵貼貼完成版（3歲半）</title>
+  <title>林昱珵貼貼完成版（3歲半｜貼紙風）</title>
   <style>
     :root{
-      --accent:#F8B7C8; /* 粉紅 */
+      --accent:#F8B7C8; /* 主色：粉紅 */
       --text:#111;
       --muted:#666;
-      --line:#ddd;
+      --line:#e7e7e7;
       --bg:#fff;
+      --paper:#fbfbfb;
+      --shadow: 0 10px 24px rgba(0,0,0,.08);
     }
     *{box-sizing:border-box}
     body{
@@ -20,67 +22,47 @@
       color:var(--text);
       background:#f6f6f6;
     }
-    .app{
-      max-width:1200px;
-      margin:16px auto;
-      padding:16px;
-    }
+    .app{ max-width:1200px; margin:16px auto; padding:16px; }
+
+    /* topbar */
     .topbar{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
+      display:flex; gap:12px; flex-wrap:wrap;
+      align-items:center; justify-content:space-between;
       margin-bottom:12px;
     }
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width:280px;
-    }
-    .title h1{
-      font-size:20px;
-      margin:0;
-      font-weight:800;
-    }
-    .title .sub{
-      font-size:12px;
-      color:var(--muted);
-    }
+    .title{ display:flex; flex-direction:column; gap:4px; min-width:280px; }
+    .title h1{ font-size:20px; margin:0; font-weight:900; }
+    .title .sub{ font-size:12px; color:var(--muted); }
+
     .controls{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
+      display:flex; gap:8px; flex-wrap:wrap;
+      align-items:center; justify-content:flex-end;
     }
     button, .pill, input[type="date"], input[type="text"]{
       border:1px solid var(--line);
       background:var(--bg);
       padding:8px 10px;
-      border-radius:10px;
+      border-radius:12px;
       font-size:14px;
     }
     button{ cursor:pointer }
     button.primary{
       border-color:transparent;
       background:var(--accent);
-      font-weight:800;
+      font-weight:900;
     }
     button.danger{
       border-color:transparent;
       background:#ffe0e0;
-      font-weight:700;
+      font-weight:800;
     }
     .pill{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:8px 10px;
-      background:#fff;
+      display:inline-flex; gap:8px; align-items:center;
+      padding:8px 10px; background:#fff;
+      box-shadow: 0 6px 16px rgba(0,0,0,.06);
     }
     .pill strong{font-size:14px}
+
     .grid{
       display:grid;
       grid-template-columns: 1.1fr 0.9fr;
@@ -89,152 +71,169 @@
     .card{
       background:#fff;
       border:1px solid var(--line);
-      border-top:4px solid var(--accent);
-      border-radius:14px;
+      border-top:5px solid var(--accent);
+      border-radius:16px;
       padding:14px;
+      box-shadow: var(--shadow);
     }
     .section-title{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:12px;
-      margin:0 0 10px 0;
+      display:flex; align-items:baseline; justify-content:space-between;
+      gap:12px; margin:0 0 10px 0;
     }
-    .section-title h2{
-      font-size:16px;
-      margin:0;
-      font-weight:900;
+    .section-title h2{ font-size:16px; margin:0; font-weight:900; }
+    .section-title .hint{ font-size:12px; color:var(--muted); }
+
+    /* stickers grid */
+    .stickers-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap:10px;
     }
-    .section-title .hint{
-      font-size:12px;
-      color:var(--muted);
+    @media (max-width: 900px){
+      .grid{ grid-template-columns: 1fr; }
+      .stickers-grid{ grid-template-columns: 1fr; }
     }
 
-    .tasks{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-    }
-    .task{
-      display:grid;
-      grid-template-columns: 22px 1fr auto;
-      gap:10px;
-      align-items:start;
-      padding:10px;
-      border:1px solid var(--line);
-      border-radius:12px;
-    }
-    .task input[type="checkbox"]{
-      width:18px;height:18px;margin-top:2px;
-      accent-color: #111;
-    }
-    .task .name{
-      font-weight:800;
-      line-height:1.35;
-    }
-    .task .meta{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:2px;
-      line-height:1.35;
-    }
-    .task .pts{
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .task .pts small{
-      font-weight:700;
-      color:var(--muted);
-    }
-
-    .stickers{
-      border:1px dashed var(--line);
-      border-radius:12px;
-      padding:10px;
-      margin-top:10px;
-      background:#fff;
-    }
-    .stickers-title{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      margin-bottom:8px;
-    }
-    .stickers-title strong{font-weight:900}
-    .sticker-wall{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-      min-height:44px;
-    }
     .sticker{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:34px;height:34px;
-      border-radius:10px;
+      position:relative;
+      background: var(--paper);
       border:1px solid var(--line);
-      background:#fff;
-      font-size:18px;
+      border-radius:18px;
+      padding:12px 12px 12px 12px;
+      box-shadow: 0 10px 20px rgba(0,0,0,.08);
+      overflow:hidden;
+      transform: rotate(var(--tilt, -1deg));
+      transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+      user-select:none;
+    }
+    .sticker:hover{
+      transform: rotate(var(--tilt, -1deg)) translateY(-2px);
+      box-shadow: 0 14px 26px rgba(0,0,0,.10);
     }
 
-    .log-top{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
+    /* corner peel */
+    .sticker::after{
+      content:"";
+      position:absolute;
+      right:-10px; top:-10px;
+      width:50px; height:50px;
+      background: linear-gradient(135deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.06) 56%, rgba(0,0,0,.02) 70%, rgba(255,255,255,.85) 100%);
+      transform: rotate(12deg);
+      border-radius: 10px;
+      pointer-events:none;
+    }
+
+    .sticker-inner{
+      display:grid;
+      grid-template-columns: 44px 1fr auto;
+      gap:10px;
       align-items:center;
-      justify-content:space-between;
+    }
+    .icon{
+      width:44px; height:44px;
+      border-radius:14px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px;
+      border:1px solid rgba(0,0,0,.06);
+      background: var(--chip, #fff);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.6);
+    }
+    .name{
+      font-weight:900;
+      line-height:1.25;
+      font-size:15px;
+    }
+    .tag{
+      font-weight:900;
+      border-radius:999px;
+      padding:6px 10px;
+      border:1px solid rgba(0,0,0,.08);
+      background:#fff;
+      white-space:nowrap;
+      box-shadow: 0 6px 14px rgba(0,0,0,.06);
+    }
+
+    /* hidden checkbox */
+    .sticker input{
+      position:absolute;
+      inset:0;
+      opacity:0;
+      cursor:pointer;
+    }
+
+    /* checked style */
+    .sticker.is-checked{
+      filter: saturate(1.1);
+      transform: rotate(0deg) scale(1.01);
+      border-color: rgba(0,0,0,.10);
+    }
+    .sticker.is-checked .tag{
+      background: var(--accent);
+      border-color: transparent;
+    }
+    .sticker.is-checked .name::after{
+      content:"  ✓";
+      font-weight:1000;
+    }
+    .pop{
+      animation: pop .22s ease-out;
+    }
+    @keyframes pop{
+      from{ transform: rotate(0deg) scale(.98); }
+      to  { transform: rotate(0deg) scale(1.01); }
+    }
+
+    /* sticker wall */
+    .wall{
+      margin-top:12px;
+      border:1px dashed var(--line);
+      border-radius:16px;
+      padding:12px;
+      background:#fff;
+    }
+    .wall-top{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:10px; margin-bottom:10px;
+    }
+    .wall-top strong{font-weight:1000}
+    .wall-grid{
+      display:flex; flex-wrap:wrap; gap:8px;
+      min-height:48px;
+    }
+    .mini{
+      width:44px; height:44px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background:#fff;
+      box-shadow: 0 10px 18px rgba(0,0,0,.08);
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px;
+      transform: rotate(var(--tilt, -2deg));
+    }
+    .mini span{ transform: translateY(1px); }
+
+    /* logs */
+    .log-top{
+      display:flex; gap:8px; flex-wrap:wrap;
+      align-items:center; justify-content:space-between;
       margin-bottom:10px;
     }
-    .log-top .left{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .log-top .right{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-    th, td{
-      border:1px solid var(--line);
-      padding:8px;
-      vertical-align:top;
-    }
-    th{
-      background:#fafafa;
-      text-align:left;
-      font-weight:900;
-    }
-    .row-actions{
-      display:flex;
-      gap:6px;
-      flex-wrap:wrap;
-    }
-    .muted{color:var(--muted)}
-    .footer-note{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
-    }
+    .log-top .left{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .log-top .right{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:flex-end; }
+    table{ width:100%; border-collapse:collapse; font-size:13px; }
+    th, td{ border:1px solid var(--line); padding:8px; vertical-align:top; }
+    th{ background:#fafafa; text-align:left; font-weight:1000; }
+    .row-actions{ display:flex; gap:6px; flex-wrap:wrap; }
+    .muted{ color:var(--muted); }
+    .footer-note{ margin-top:10px; font-size:12px; color:var(--muted); }
 
-    /* 列印（A4 橫式） */
+    /* print */
     @media print{
       body{ background:#fff }
       .app{ max-width:none; margin:0; padding:0 }
       .topbar, .controls, .footer-note, .row-actions button, .log-top .right button { display:none !important; }
       .grid{ grid-template-columns: 1fr 1fr; gap:10px; }
-      .card{ border:1px solid #000; border-top:4px solid #000; border-radius:0; }
-      .task{ border:1px solid #000; border-radius:0; }
+      .card{ border:1px solid #000; border-top:4px solid #000; border-radius:0; box-shadow:none; }
       th, td{ border:1px solid #000; }
       @page{ size: A4 landscape; margin: 10mm; }
     }
@@ -244,8 +243,8 @@
   <div class="app">
     <div class="topbar">
       <div class="title">
-        <h1>昱珵貼貼完成版（3歲半）</h1>
-        <div class="sub">A4 橫式可列印｜勾選就拿貼貼｜紀錄存在本機瀏覽器（localStorage）</div>
+        <h1>林昱珵｜貼貼完成版（3歲半）</h1>
+        <div class="sub">每完成一項就貼一張｜勾選→貼貼牆出現貼紙｜可存成每日紀錄</div>
       </div>
       <div class="controls">
         <span class="pill"><span class="muted">今日貼貼</span> <strong id="todayTotal">0</strong></span>
@@ -257,25 +256,23 @@
     </div>
 
     <div class="grid">
-      <!-- 勾選區 -->
-      <section class="card" aria-label="貼貼任務清單">
+      <section class="card" aria-label="貼紙任務區">
         <div class="section-title">
-          <h2>今天完成什麼（每項＝1張貼貼）</h2>
-          <div class="hint">越小越簡單：完成就好，不追求完美</div>
+          <h2>今天的貼紙任務（每張＝1貼貼）</h2>
+          <div class="hint">完成就算；不要扣、不要比</div>
         </div>
 
-        <div class="tasks" id="tasks"></div>
+        <div class="stickers-grid" id="stickersGrid"></div>
 
-        <div class="stickers">
-          <div class="stickers-title">
+        <div class="wall">
+          <div class="wall-top">
             <strong>貼貼牆</strong>
-            <span class="muted">完成 1 項就出現 1 張</span>
+            <span class="muted">勾幾項就出現幾張</span>
           </div>
-          <div class="sticker-wall" id="stickerWall"></div>
+          <div class="wall-grid" id="stickerWall"></div>
         </div>
       </section>
 
-      <!-- 紀錄區 -->
       <section class="card" aria-label="貼貼紀錄表">
         <div class="section-title">
           <h2>貼貼紀錄表</h2>
@@ -313,7 +310,7 @@
         </table>
 
         <div class="footer-note">
-          小提醒：此頁資料保存在本機瀏覽器（localStorage）。換電腦/清除瀏覽資料會不見。
+          小提醒：資料存在本機瀏覽器（localStorage）。換電腦或清除瀏覽資料會不見。
         </div>
       </section>
     </div>
@@ -322,37 +319,33 @@
 <script>
   const STORAGE_KEY = "yuting_stickers_v1";
 
-  // 昱珵（3歲半）貼貼任務：每項=1貼貼
+  // 每一張貼紙：icon + 背景色 chip + 文字
   const TASKS = [
-    { id:"a1", name:"刷牙（願意配合）" },
-    { id:"a2", name:"洗手（提醒一次內完成）" },
-    { id:"a3", name:"穿鞋/穿外套（願意自己做）" },
-    { id:"a4", name:"收玩具（一起收也算）" },
-    { id:"a5", name:"上廁所/尿尿（有說就好）" },
-    { id:"a6", name:"吃飯不站起來（30 分鐘內）" },
-    { id:"a7", name:"睡覺快速（提醒一次內上床）" },
-    { id:"a8", name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內）" },
-    { id:"a9", name:"情緒穩定（哭一下可以，能回來就算）" },
-    { id:"a10", name:"主動說謝謝/請（任一個）" },
-    { id:"a11", name:"幫忙小家事（拿尿布/遞東西/擦桌子）" },
-    { id:"a12", name:"好好跟哥哥姊姊相處（不打人）" },
+    { id:"s1",  name:"吃飯坐好（30 分鐘內）", icon:"🍚", chip:"#FFE7B8" },
+    { id:"s2",  name:"刷牙（願意配合）",       icon:"🪥", chip:"#DFF3FF" },
+    { id:"s3",  name:"洗手（提醒一次內）",     icon:"🧼", chip:"#E6F7E6" },
+    { id:"s4",  name:"收玩具（一起也算）",     icon:"🧸", chip:"#FEE1EA" },
+    { id:"s5",  name:"睡覺上床（提醒一次內）", icon:"🌙", chip:"#E8E2FF" },
+    { id:"s6",  name:"情緒回來（哭一下可以）", icon:"🌈", chip:"#E9FFF1" },
+    // 你指定的「沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內）」也可以放在這裡
+    { id:"s7",  name:"沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內）", icon:"⭐", chip:"#FFF0F5" },
+    { id:"s8",  name:"幫忙小家事（遞東西/擦桌）", icon:"🧽", chip:"#E8FFF7" },
   ];
 
   const state = loadState();
 
-  const tasksEl = document.getElementById("tasks");
+  const gridEl = document.getElementById("stickersGrid");
+  const wallEl = document.getElementById("stickerWall");
   const todayTotalEl = document.getElementById("todayTotal");
   const allTotalEl = document.getElementById("allTotal");
   const logBodyEl = document.getElementById("logBody");
-  const stickerWallEl = document.getElementById("stickerWall");
-
   const logDateEl = document.getElementById("logDate");
   const logSignEl = document.getElementById("logSign");
 
   const todayStr = new Date().toISOString().slice(0,10);
   logDateEl.value = todayStr;
 
-  renderTasks();
+  renderStickers();
   renderLogs();
   computeToday();
   computeAll();
@@ -362,7 +355,7 @@
   document.getElementById("btnResetToday").addEventListener("click", () => {
     state.today = { checks:{} };
     saveState();
-    renderTasks();
+    renderStickers();
     computeToday();
   });
 
@@ -373,7 +366,7 @@
     const stickers = computeToday(true);
 
     state.logs.unshift({
-      id: crypto.randomUUID(),
+      id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
       date,
       summary,
       stickers,
@@ -389,7 +382,7 @@
     const date = logDateEl.value || todayStr;
     const sign = (logSignEl.value || "").trim();
     state.logs.unshift({
-      id: crypto.randomUUID(),
+      id: (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()),
       date,
       summary: "（手動新增）",
       stickers: 0,
@@ -408,50 +401,76 @@
     computeAll();
   });
 
-  function renderTasks(){
-    tasksEl.innerHTML = "";
-    TASKS.forEach(t => {
-      const row = document.createElement("div");
-      row.className = "task";
+  function renderStickers(){
+    gridEl.innerHTML = "";
+    TASKS.forEach((t, idx) => {
+      const tilt = (idx % 3 === 0) ? -2 : (idx % 3 === 1) ? 1 : -1;
 
-      const cb = document.createElement("input");
-      cb.type = "checkbox";
-      cb.checked = !!state.today.checks[t.id];
+      const el = document.createElement("div");
+      el.className = "sticker";
+      el.style.setProperty("--tilt", tilt + "deg");
+      el.style.setProperty("--chip", t.chip);
+
+      const checked = !!state.today.checks[t.id];
+      if (checked) el.classList.add("is-checked");
+
+      el.innerHTML = `
+        <input type="checkbox" ${checked ? "checked" : ""} aria-label="${t.name}">
+        <div class="sticker-inner">
+          <div class="icon" aria-hidden="true">${t.icon}</div>
+          <div class="name">${escapeHtml(t.name)}</div>
+          <div class="tag">+1 貼貼</div>
+        </div>
+      `;
+
+      const cb = el.querySelector("input");
       cb.addEventListener("change", () => {
         state.today.checks[t.id] = cb.checked;
         saveState();
+
+        // 視覺狀態
+        el.classList.toggle("is-checked", cb.checked);
+        el.classList.remove("pop");
+        void el.offsetWidth; // restart animation
+        el.classList.add("pop");
+
         computeToday();
       });
 
-      const mid = document.createElement("div");
-      const name = document.createElement("div");
-      name.className = "name";
-      name.textContent = t.name;
-      const meta = document.createElement("div");
-      meta.className = "meta";
-      meta.textContent = "";
-      mid.appendChild(name);
-
-      const pts = document.createElement("div");
-      pts.className = "pts";
-      pts.textContent = `+1 貼貼`;
-
-      row.appendChild(cb);
-      row.appendChild(mid);
-      row.appendChild(pts);
-      tasksEl.appendChild(row);
+      gridEl.appendChild(el);
     });
-    renderStickerWall( computeToday(true) );
+
+    renderWall( computeToday(true) );
   }
 
   function computeToday(returnNumber=false){
     let total = 0;
-    TASKS.forEach(t => {
-      if (!!state.today.checks[t.id]) total += 1;
-    });
+    TASKS.forEach(t => { if (state.today.checks[t.id]) total += 1; });
     todayTotalEl.textContent = total;
-    renderStickerWall(total);
+    renderWall(total);
     return returnNumber ? total : undefined;
+  }
+
+  function renderWall(count){
+    wallEl.innerHTML = "";
+    const picked = TASKS.filter(t => state.today.checks[t.id]);
+
+    if (!picked.length){
+      const hint = document.createElement("div");
+      hint.className = "muted";
+      hint.style.fontSize = "12px";
+      hint.textContent = "先完成一項，就會出現第一張貼紙。";
+      wallEl.appendChild(hint);
+      return;
+    }
+
+    picked.forEach((t, i) => {
+      const mini = document.createElement("div");
+      mini.className = "mini";
+      mini.style.setProperty("--tilt", ((i%4)-2) + "deg");
+      mini.innerHTML = `<span>${t.icon}</span>`;
+      wallEl.appendChild(mini);
+    });
   }
 
   function computeAll(){
@@ -460,30 +479,8 @@
     return sum;
   }
 
-  function renderStickerWall(count){
-    stickerWallEl.innerHTML = "";
-    const n = Math.max(0, Number(count) || 0);
-    for (let i=0; i<n; i++){
-      const s = document.createElement("div");
-      s.className = "sticker";
-      s.textContent = "🌟";
-      stickerWallEl.appendChild(s);
-    }
-    if (n === 0){
-      const hint = document.createElement("div");
-      hint.className = "muted";
-      hint.style.fontSize = "12px";
-      hint.textContent = "今天先完成一項，就會出現第一張貼貼。";
-      stickerWallEl.appendChild(hint);
-    }
-  }
-
   function getCheckedSummary(){
-    const parts = [];
-    TASKS.forEach(t => {
-      if (!state.today.checks[t.id]) return;
-      parts.push(t.name);
-    });
+    const parts = TASKS.filter(t => state.today.checks[t.id]).map(t => t.name);
     return parts.join("；");
   }
 
@@ -499,38 +496,20 @@
     state.logs.forEach(log => {
       const tr = document.createElement("tr");
 
-      const tdDate = document.createElement("td");
-      tdDate.textContent = log.date || "";
-      tr.appendChild(tdDate);
+      tr.innerHTML = `
+        <td>${escapeHtml(log.date || "")}</td>
+        <td>${escapeHtml(log.summary || "")}</td>
+        <td>${String(log.stickers ?? 0)}</td>
+        <td>${escapeHtml(log.sign || "")}</td>
+        <td><div class="row-actions"><button data-del="${log.id}">刪除</button></div></td>
+      `;
 
-      const tdSum = document.createElement("td");
-      tdSum.textContent = log.summary || "";
-      tr.appendChild(tdSum);
-
-      const tdPts = document.createElement("td");
-      tdPts.textContent = String(log.stickers ?? 0);
-      tr.appendChild(tdPts);
-
-      const tdSign = document.createElement("td");
-      tdSign.textContent = log.sign || "";
-      tr.appendChild(tdSign);
-
-      const tdAct = document.createElement("td");
-      const wrap = document.createElement("div");
-      wrap.className = "row-actions";
-
-      const btnDel = document.createElement("button");
-      btnDel.textContent = "刪除";
-      btnDel.addEventListener("click", () => {
+      tr.querySelector("button[data-del]").addEventListener("click", () => {
         state.logs = state.logs.filter(x => x.id !== log.id);
         saveState();
         renderLogs();
         computeAll();
       });
-
-      wrap.appendChild(btnDel);
-      tdAct.appendChild(wrap);
-      tr.appendChild(tdAct);
 
       logBodyEl.appendChild(tr);
     });
@@ -552,6 +531,15 @@
 
   function saveState(){
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function escapeHtml(str){
+    return String(str)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
   }
 </script>
 </body>
