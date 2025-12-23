@@ -8,10 +8,15 @@
     :root{
       --text:#111;
       --muted:#666;
-      --line:#e6e6e6;
-      --bg:#f6f6f6;
+      --line:#e9e9e9;
+      --bg:#f6f6fb;
       --card:#fff;
-      --radius:16px;
+      --radius:18px;
+
+      --eugene:#F7C9A0;
+      --orange:#F8B7C8;
+      --time:#A7D8F5;
+      --persimmon:#FFC57A;
     }
     *{box-sizing:border-box}
     body{
@@ -19,107 +24,138 @@
       font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI",
                    "Noto Sans TC","Microsoft JhengHei", Arial, sans-serif;
       color:var(--text);
-      background:var(--bg);
+      background:
+        radial-gradient(1200px 500px at 10% 0%, #ffffff 0%, rgba(255,255,255,0) 70%),
+        radial-gradient(900px 400px at 90% 10%, #ffffff 0%, rgba(255,255,255,0) 70%),
+        var(--bg);
     }
-    .wrap{
-      max-width:1000px;
-      margin:20px auto;
-      padding:16px;
-    }
+    .wrap{max-width:1040px;margin:22px auto;padding:16px;}
     .head{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      margin-bottom:14px;
+      display:flex;align-items:flex-end;justify-content:space-between;gap:12px;
+      flex-wrap:wrap;margin-bottom:14px;
     }
-    h1{margin:0;font-size:20px;font-weight:900}
-    .sub{color:var(--muted);font-size:13px}
+    .brand{
+      display:flex;gap:12px;align-items:center;
+    }
+    .logo{
+      width:44px;height:44px;border-radius:14px;
+      background:conic-gradient(from 180deg, var(--time), var(--orange), var(--persimmon), var(--eugene), var(--time));
+      box-shadow:0 10px 18px rgba(0,0,0,.08);
+      position:relative;
+      overflow:hidden;
+    }
+    .logo:after{
+      content:"";
+      position:absolute;inset:-20px;
+      background:radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,255,255,0) 55%);
+      transform:rotate(12deg);
+    }
+    h1{margin:0;font-size:20px;font-weight:900;line-height:1.1}
+    .sub{margin-top:6px;color:var(--muted);font-size:13px;line-height:1.4}
+    .chips{
+      display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;
+    }
+    .chip{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 10px;border-radius:999px;border:1px solid var(--line);
+      background:#fff;font-size:12px;color:var(--muted);
+      box-shadow:0 6px 14px rgba(0,0,0,.05);
+    }
+    .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
     .grid{
       display:grid;
       grid-template-columns: repeat(2, 1fr);
       gap:12px;
     }
-    @media (max-width:720px){
-      .grid{grid-template-columns:1fr}
-    }
+    @media (max-width:760px){ .grid{grid-template-columns:1fr} }
+
     a.card{
-      text-decoration:none;
-      color:inherit;
+      text-decoration:none;color:inherit;
       background:var(--card);
       border:1px solid var(--line);
       border-radius:var(--radius);
       padding:16px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      transition: transform .05s ease;
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      box-shadow:0 10px 22px rgba(0,0,0,.06);
+      position:relative;
+      overflow:hidden;
+      transform:translateY(0);
+      transition: transform .10s ease, box-shadow .10s ease;
     }
-    a.card:active{transform:scale(0.99)}
-    .left{
-      display:flex;
-      flex-direction:column;
-      gap:6px;
-      min-width:0;
+    a.card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 14px 26px rgba(0,0,0,.09);
     }
-    .name{
-      font-size:18px;
-      font-weight:900;
-      line-height:1.1;
+    a.card:active{transform:translateY(0) scale(.99)}
+    .left{display:flex;flex-direction:column;gap:6px;min-width:0}
+    .name{font-size:18px;font-weight:900;line-height:1.15}
+    .tag{font-size:12px;color:var(--muted);line-height:1.35}
+    .metaRow{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+    .badge{
+      display:inline-flex;align-items:center;gap:6px;
+      padding:7px 10px;border-radius:999px;
+      background:#fff;border:1px solid var(--line);
+      font-size:12px;color:#333;
     }
-    .tag{
-      font-size:12px;
-      color:var(--muted);
+    .badge small{color:var(--muted);font-weight:700}
+    .arrow{
+      font-size:20px;color:#777;flex:0 0 auto;
+      background:#fff;border:1px solid var(--line);
+      width:36px;height:36px;border-radius:14px;
+      display:flex;align-items:center;justify-content:center;
     }
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 10px;
-      border-radius:999px;
+
+    /* 卡片上的童趣裝飾泡泡 */
+    .bubbles{
+      position:absolute;inset:0;pointer-events:none;opacity:.55;
+    }
+    .bubble{
+      position:absolute;border-radius:50%;
+      background:rgba(255,255,255,.9);
+      border:1px solid rgba(255,255,255,.7);
+      filter:blur(.1px);
+      animation: float 5s ease-in-out infinite;
+    }
+    .bubble:nth-child(1){width:44px;height:44px;left:-10px;top:10px;animation-duration:6s}
+    .bubble:nth-child(2){width:26px;height:26px;left:40%;top:-8px;animation-duration:5s}
+    .bubble:nth-child(3){width:18px;height:18px;right:18px;bottom:14px;animation-duration:7s}
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-6px)}
+    }
+
+    /* 各孩子色條（頂部彩條） */
+    .stripe{position:absolute;left:0;top:0;height:7px;width:100%;}
+    .c-eugene .stripe{background:var(--eugene)}
+    .c-orange .stripe{background:var(--orange)}
+    .c-time .stripe{background:var(--time)}
+    .c-persimmon .stripe{background:var(--persimmon)}
+
+    /* 左側小圖示圈圈 */
+    .icon{
+      width:44px;height:44px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
       border:1px solid var(--line);
       background:#fff;
-      font-size:12px;
-      color:var(--muted);
-      margin-top:10px;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:50%;
-      display:inline-block;
-    }
-    .arrow{
-      font-size:18px;
-      color:#888;
+      box-shadow:0 8px 16px rgba(0,0,0,.06);
+      font-size:22px;
       flex:0 0 auto;
     }
-    /* 各孩子色票（只用在入口卡片） */
-    .c-eugene{ background:linear-gradient(0deg,#fff, #fff); border-top:6px solid #F7C9A0; }
-    .c-orange{ background:linear-gradient(0deg,#fff, #fff); border-top:6px solid #F8B7C8; }
-    .c-time{   background:linear-gradient(0deg,#fff, #fff); border-top:6px solid #A7D8F5; }
-    .c-persimmon{ background:linear-gradient(0deg,#fff, #fff); border-top:6px solid #FFC57A; }
+    .row{
+      display:flex;gap:12px;align-items:center;
+    }
 
+    /* 底部小捷徑 */
     .foot{
-      margin-top:12px;
-      color:var(--muted);
-      font-size:12px;
-      line-height:1.5;
+      margin-top:14px;color:var(--muted);font-size:12px;line-height:1.6;
+      background:#fff;border:1px solid var(--line);
+      border-radius:16px;padding:12px 14px;
+      box-shadow:0 10px 22px rgba(0,0,0,.05);
     }
-    .mini{
-      display:flex;
-      flex-wrap:wrap;
-      gap:8px;
-      margin-top:8px;
-    }
+    .mini{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
     .mini a{
-      color:#333;
-      text-decoration:none;
-      background:#fff;
-      border:1px solid var(--line);
-      border-radius:10px;
-      padding:8px 10px;
-      font-size:12px;
+      color:#333;text-decoration:none;background:#fff;border:1px solid var(--line);
+      border-radius:12px;padding:8px 10px;font-size:12px;
     }
   </style>
 </head>
@@ -127,57 +163,107 @@
   <div class="wrap">
     <div class="head">
       <div>
-        <h1>四個孩子點數入口頁</h1>
-        <div class="sub">點進去就能記點數｜資料存在各自頁面的本機瀏覽器（localStorage）</div>
+        <div class="brand">
+          <div class="logo" aria-hidden="true"></div>
+          <div>
+            <h1>四個孩子點數入口頁</h1>
+            <div class="sub">點一下就進去記點數 ✨｜資料存在各自頁面的本機瀏覽器（localStorage）</div>
+          </div>
+        </div>
       </div>
-      <div class="pill">
-        <span class="dot" style="background:#22c55e"></span>
-        <span>入口頁（index.html）</span>
+
+      <div class="chips">
+        <div class="chip"><span class="dot" style="background:#22c55e"></span><span>入口頁（index.html）</span></div>
+        <div class="chip">如果更新沒看到：<b>Ctrl + F5</b> 或網址加 <b>?v=2</b></div>
       </div>
     </div>
 
     <div class="grid">
       <a class="card c-eugene" href="./eugene.html">
-        <div class="left">
-          <div class="name">林昱呈（Eugene）</div>
-          <div class="tag">12歲｜點數任務制度</div>
+        <div class="stripe"></div>
+        <div class="bubbles" aria-hidden="true">
+          <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
+        </div>
+        <div class="row">
+          <div class="icon" aria-hidden="true">🦁</div>
+          <div class="left">
+            <div class="name">林昱呈（Eugene）</div>
+            <div class="tag">七年級｜點數任務制度</div>
+            <div class="metaRow">
+              <span class="badge">📚 <small>自律</small></span>
+              <span class="badge">🏃 <small>運動</small></span>
+            </div>
+          </div>
         </div>
         <div class="arrow">›</div>
       </a>
 
       <a class="card c-orange" href="./orange.html">
-        <div class="left">
-          <div class="name">林昱橙（Orange）</div>
-          <div class="tag">9歲｜點數任務制度（粉紅版）</div>
+        <div class="stripe"></div>
+        <div class="bubbles" aria-hidden="true">
+          <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
+        </div>
+        <div class="row">
+          <div class="icon" aria-hidden="true">🍊</div>
+          <div class="left">
+            <div class="name">林昱橙（Orange）</div>
+            <div class="tag">四年級｜點數任務制度（粉紅版）</div>
+            <div class="metaRow">
+              <span class="badge">📝 <small>作業</small></span>
+              <span class="badge">💗 <small>態度</small></span>
+            </div>
+          </div>
         </div>
         <div class="arrow">›</div>
       </a>
 
       <a class="card c-time" href="./time.html">
-        <div class="left">
-          <div class="name">林昱澂（Time）</div>
-          <div class="tag">6歲｜點數任務制度（粉藍版）</div>
+        <div class="stripe"></div>
+        <div class="bubbles" aria-hidden="true">
+          <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
+        </div>
+        <div class="row">
+          <div class="icon" aria-hidden="true">⏳</div>
+          <div class="left">
+            <div class="name">林昱澂（Time）</div>
+            <div class="tag">一年級｜點數任務制度（粉藍版）</div>
+            <div class="metaRow">
+              <span class="badge">🥛 <small>健康</small></span>
+              <span class="badge">🌟 <small>完成</small></span>
+            </div>
+          </div>
         </div>
         <div class="arrow">›</div>
       </a>
 
       <a class="card c-persimmon" href="./persimmon.html">
-        <div class="left">
-          <div class="name">林昱珵（小柿子）</div>
-          <div class="tag">3歲半｜貼貼完成版（貼紙式）</div>
+        <div class="stripe"></div>
+        <div class="bubbles" aria-hidden="true">
+          <span class="bubble"></span><span class="bubble"></span><span class="bubble"></span>
+        </div>
+        <div class="row">
+          <div class="icon" aria-hidden="true">🍅</div>
+          <div class="left">
+            <div class="name">林昱珵（小柿子）</div>
+            <div class="tag">3歲半｜貼貼完成版（貼紙式）</div>
+            <div class="metaRow">
+              <span class="badge">🧸 <small>生活</small></span>
+              <span class="badge">🎀 <small>貼貼</small></span>
+            </div>
+          </div>
         </div>
         <div class="arrow">›</div>
       </a>
     </div>
 
     <div class="foot">
-      小提醒：如果你剛剛才更新，GitHub Pages 可能會有快取。<br/>
-      你可以用「Ctrl + F5」強制重整，或在網址後面加「?v=2」再開一次。
+      <b>小提醒</b>：如果點進去顯示 404，通常是「檔名不一致」或「大小寫」不一樣。GitHub Pages 連結大小寫要完全一致。<br/>
+      你也可以在網址後面加 <b>?v=3</b> 避免快取。
       <div class="mini">
-        <a href="./eugene.html">Eugene</a>
-        <a href="./orange.html">Orange</a>
-        <a href="./time.html">Time</a>
-        <a href="./persimmon.html">小柿子</a>
+        <a href="./eugene.html">🦁 Eugene</a>
+        <a href="./orange.html">🍊 Orange</a>
+        <a href="./time.html">⏳ Time</a>
+        <a href="./persimmon.html">🍅 小柿子</a>
       </div>
     </div>
   </div>
