@@ -51,6 +51,7 @@
     .task .pts{font-weight:900;white-space:nowrap;}
     .task .pts.negative{color:#b91c1c;}
     .task .pts small{font-weight:700;color:var(--muted);}
+
     .divider{
       margin:12px 0 8px;
       border-top:1px dashed var(--line);
@@ -61,6 +62,10 @@
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
+    }
+    .neg-input{
+      width:240px;
+      max-width:100%;
     }
 
     .log-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px;}
@@ -118,7 +123,7 @@
         <div class="tasks" id="tasksPos"></div>
 
         <div class="divider">
-          <div><strong>扣分（做了就扣點）</strong></div>
+          <div><strong>扣分（只一個，可備註原因）</strong></div>
           <div>ㄗㄨㄛˋ ㄌㄜ˙ ㄐㄧㄡˋ ㄎㄡˋ ㄉㄧㄢˇ</div>
         </div>
         <div class="tasks" id="tasksNeg"></div>
@@ -168,7 +173,7 @@
   </div>
 
 <script>
-  const STORAGE_KEY = "time_points_v2"; // v2：加入扣分
+  const STORAGE_KEY = "time_points_v3"; // v3：單一扣分＋可備註
 
   // 加分任務（+）
   const POS_TASKS = [
@@ -185,14 +190,14 @@
     { id:"p11", name:"特別任務（家長指定）", zhuyin:"ㄊㄜˋ ㄅㄧㄝˊ ㄖㄣˋ ㄨˋ ㄐㄧㄚ ㄓㄤˇ ㄓˇ ㄉㄧㄥˋ", pts:"1-5" }
   ];
 
-  // 扣分任務（-）— 勾到就扣點
-  const NEG_TASKS = [
-    { id:"n1", name:"吃飯一直站起來/亂跑", zhuyin:"ㄔ ㄈㄢˋ ㄧ ㄓˊ ㄓㄢˋ ㄑㄧˇ ㄌㄞˊ ㄌㄨㄢˋ ㄆㄠˇ", pts:-1 },
-    { id:"n2", name:"頂嘴/大聲回嘴",       zhuyin:"ㄉㄧㄥˇ ㄗㄨㄟˇ ㄉㄚˋ ㄕㄥ ㄏㄨㄟˊ ㄗㄨㄟˇ", pts:-1 },
-    { id:"n3", name:"打人/推人/丟東西",    zhuyin:"ㄉㄚˇ ㄖㄣˊ ㄊㄨㄟ ㄖㄣˊ ㄉㄧㄡ ㄉㄨㄥ ㄒㄧ", pts:-2 },
-    { id:"n4", name:"不配合刷牙/洗鼻子",   zhuyin:"ㄅㄨˋ ㄆㄟˋ ㄏㄜˊ ㄕㄨㄚ ㄧㄚˊ ㄒㄧˇ ㄅㄧˊ ㄗ˙", pts:-1 },
-    { id:"n5", name:"哭鬧很久（超過 5 分鐘）", zhuyin:"ㄎㄨ ㄋㄠˋ ㄏㄣˇ ㄐㄧㄡˇ ㄔㄠ ㄍㄨㄛˋ ㄨˇ ㄈㄣ ㄓㄨㄥ", pts:-1 }
-  ];
+  // 單一扣分（-）＋原因備註（自由輸入）
+  const NEG_TASK = {
+    id:"n1",
+    name:"扣分（原因自己寫）",
+    zhuyin:"ㄎㄡˋ ㄈㄣ ㄩㄢˊ ㄧㄣ ㄗˋ ㄐㄧˇ ㄒㄧㄝˇ",
+    pts:"-1~ -5", // 顯示用
+    defaultValue:"-1"
+  };
 
   const state = loadState();
 
@@ -216,7 +221,7 @@
   document.getElementById("btnPrint").addEventListener("click", () => window.print());
 
   document.getElementById("btnResetToday").addEventListener("click", () => {
-    state.today = { checks:{}, custom:{} };
+    state.today = { checks:{}, custom:{}, notes:{} };
     saveState();
     renderAllTasks();
     computeTotal();
@@ -265,7 +270,7 @@
     tasksPosEl.innerHTML = "";
     tasksNegEl.innerHTML = "";
     renderTaskList(tasksPosEl, POS_TASKS);
-    renderTaskList(tasksNegEl, NEG_TASKS);
+    renderSingleNeg(tasksNegEl, NEG_TASK);
   }
 
   function renderTaskList(container, list){
@@ -307,9 +312,7 @@
       pts.className = "pts";
 
       if (!isCustom){
-        const isNeg = (typeof t.pts === "number" && t.pts < 0);
-        if (isNeg) pts.classList.add("negative");
-        pts.textContent = `${t.pts > 0 ? "+" : ""}${t.pts} 點`;
+        pts.textContent = `+${t.pts} 點`;
       } else {
         const wrap = document.createElement("div");
         wrap.style.display = "grid";
@@ -338,25 +341,100 @@
     });
   }
 
+  function renderSingleNeg(container, t){
+    const row = document.createElement("div");
+    row.className = "task";
+
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = !!state.today.checks[t.id];
+    cb.addEventListener("change", () => {
+      state.today.checks[t.id] = cb.checked;
+      saveState();
+      computeTotal();
+    });
+
+    const mid = document.createElement("div");
+
+    const name = document.createElement("div");
+    name.className = "name";
+    name.textContent = t.name;
+
+    const zy = document.createElement("div");
+    zy.className = "zhuyin";
+    zy.textContent = t.zhuyin || "";
+
+    const meta = document.createElement("div");
+    meta.className = "meta";
+    meta.textContent = "輸入負分（例如 -1 / -2 / -3），再寫原因";
+
+    const note = document.createElement("input");
+    note.type = "text";
+    note.className = "neg-input";
+    note.placeholder = "原因（例：打人/頂嘴/哭鬧很久…）";
+    note.value = (state.today.notes?.[t.id] ?? "");
+    note.addEventListener("input", () => {
+      state.today.notes = state.today.notes || {};
+      state.today.notes[t.id] = note.value;
+      saveState();
+    });
+
+    mid.appendChild(name);
+    if (t.zhuyin) mid.appendChild(zy);
+    mid.appendChild(meta);
+    mid.appendChild(note);
+
+    const pts = document.createElement("div");
+    pts.className = "pts negative";
+
+    const wrap = document.createElement("div");
+    wrap.style.display = "grid";
+    wrap.style.gap = "6px";
+
+    const label = document.createElement("div");
+    label.innerHTML = `<small>負分</small>`;
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.placeholder = t.pts; // 顯示 -1~ -5
+    input.value = (state.today.custom?.[t.id] ?? t.defaultValue);
+    input.style.width = "90px";
+    input.addEventListener("input", () => {
+      state.today.custom[t.id] = input.value;
+      saveState();
+      computeTotal();
+    });
+
+    wrap.appendChild(label);
+    wrap.appendChild(input);
+    pts.appendChild(wrap);
+
+    row.appendChild(cb);
+    row.appendChild(mid);
+    row.appendChild(pts);
+    container.appendChild(row);
+  }
+
   function computeTotal(returnNumber=false){
     let total = 0;
 
-    // 正向
     POS_TASKS.forEach(t => {
       if (!state.today.checks[t.id]) return;
-      if (typeof t.pts === "number") total += t.pts;
-      else{
+      if (typeof t.pts === "number"){
+        total += t.pts;
+      } else {
         const raw = (state.today.custom[t.id] ?? "").trim();
         const n = parseInt(raw, 10);
         if (!Number.isNaN(n) && n >= 0) total += n;
       }
     });
 
-    // 負向
-    NEG_TASKS.forEach(t => {
-      if (!state.today.checks[t.id]) return;
-      if (typeof t.pts === "number") total += t.pts; // 這裡是負數會扣掉
-    });
+    // 單一扣分：只要勾選，就把輸入的負數加進去（會扣）
+    if (state.today.checks[NEG_TASK.id]){
+      const raw = (state.today.custom[NEG_TASK.id] ?? NEG_TASK.defaultValue).trim();
+      const n = parseInt(raw, 10);
+      if (!Number.isNaN(n) && n <= 0) total += n; // 必須是 <=0 才算扣分
+    }
 
     todayTotalEl.textContent = total;
     return returnNumber ? total : undefined;
@@ -370,24 +448,26 @@
 
   function getCheckedSummary(){
     const parts = [];
-    const addPart = (t, ptsShown) => parts.push(`${t.name}(${ptsShown > 0 ? "+" : ""}${ptsShown})`);
 
     POS_TASKS.forEach(t => {
       if (!state.today.checks[t.id]) return;
       if (typeof t.pts === "number"){
-        addPart(t, t.pts);
+        parts.push(`${t.name}(+${t.pts})`);
       } else {
         const raw = (state.today.custom[t.id] ?? "").trim();
         const n = parseInt(raw, 10);
         const shown = (!Number.isNaN(n) && n>=0) ? n : 0;
-        addPart(t, shown);
+        parts.push(`${t.name}(+${shown})`);
       }
     });
 
-    NEG_TASKS.forEach(t => {
-      if (!state.today.checks[t.id]) return;
-      addPart(t, t.pts);
-    });
+    if (state.today.checks[NEG_TASK.id]){
+      const raw = (state.today.custom[NEG_TASK.id] ?? NEG_TASK.defaultValue).trim();
+      const n = parseInt(raw, 10);
+      const ptsShown = (!Number.isNaN(n) && n <= 0) ? n : 0;
+      const reason = (state.today.notes?.[NEG_TASK.id] ?? "").trim();
+      parts.push(`扣分(${ptsShown})${reason ? "：" + reason : ""}`);
+    }
 
     return parts.join("；");
   }
@@ -444,14 +524,14 @@
   function loadState(){
     try{
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { today:{checks:{}, custom:{}}, logs:[] };
+      if (!raw) return { today:{checks:{}, custom:{}, notes:{}}, logs:[] };
       const parsed = JSON.parse(raw);
       return {
-        today: parsed.today ?? {checks:{}, custom:{}},
+        today: parsed.today ?? {checks:{}, custom:{}, notes:{}},
         logs: Array.isArray(parsed.logs) ? parsed.logs : []
       };
     }catch{
-      return { today:{checks:{}, custom:{}}, logs:[] };
+      return { today:{checks:{}, custom:{}, notes:{}}, logs:[] };
     }
   }
 
