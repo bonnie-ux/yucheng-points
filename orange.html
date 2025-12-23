@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>林昱橙點數任務制度（四年級）</title>
+  <title>林昱橙點數任務制度（9歲）</title>
   <style>
     :root{
       --accent:#F8B7C8; /* 粉紅 */
@@ -20,189 +20,70 @@
       color:var(--text);
       background:#f6f6f6;
     }
-    .app{
-      max-width:1200px;
-      margin:16px auto;
-      padding:16px;
+    .app{max-width:1200px;margin:16px auto;padding:16px;}
+    .topbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:12px;}
+    .title{display:flex;flex-direction:column;gap:4px;min-width:280px;}
+    .title h1{font-size:20px;margin:0;font-weight:700;}
+    .title .sub{font-size:12px;color:var(--muted);}
+    .controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+    button,.pill,input[type="date"],input[type="text"]{
+      border:1px solid var(--line);background:var(--bg);padding:8px 10px;border-radius:10px;font-size:14px;
     }
-    .topbar{
-      display:flex;
-      gap:12px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:space-between;
-      margin-bottom:12px;
-    }
-    .title{
-      display:flex;
-      flex-direction:column;
-      gap:4px;
-      min-width:280px;
-    }
-    .title h1{
-      font-size:20px;
-      margin:0;
-      font-weight:700;
-    }
-    .title .sub{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .controls{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    button, .pill, input[type="date"], input[type="text"]{
-      border:1px solid var(--line);
-      background:var(--bg);
-      padding:8px 10px;
-      border-radius:10px;
-      font-size:14px;
-    }
-    button{ cursor:pointer }
-    button.primary{
-      border-color:transparent;
-      background:var(--accent);
-      font-weight:700;
-    }
-    button.danger{
-      border-color:transparent;
-      background:#ffe0e0;
-    }
-    .pill{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:8px 10px;
-      background:#fff;
-    }
+    button{cursor:pointer}
+    button.primary{border-color:transparent;background:var(--accent);font-weight:700;}
+    button.danger{border-color:transparent;background:#ffe0e0;}
+    .pill{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;background:#fff;}
     .pill strong{font-size:14px}
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap:12px;
-    }
-    .card{
-      background:#fff;
-      border:1px solid var(--line);
-      border-top:4px solid var(--accent);
-      border-radius:14px;
-      padding:14px;
-    }
-    .section-title{
-      display:flex;
-      align-items:baseline;
-      justify-content:space-between;
-      gap:12px;
-      margin:0 0 10px 0;
-    }
-    .section-title h2{
-      font-size:16px;
-      margin:0;
-      font-weight:800;
-    }
-    .section-title .hint{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .tasks{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:8px;
-    }
+    .grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:12px;}
+    .card{background:#fff;border:1px solid var(--line);border-top:4px solid var(--accent);border-radius:14px;padding:14px;}
+    .section-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 10px 0;}
+    .section-title h2{font-size:16px;margin:0;font-weight:800;}
+    .section-title .hint{font-size:12px;color:var(--muted);}
+
+    .tasks{display:grid;grid-template-columns:1fr;gap:8px;}
     .task{
-      display:grid;
-      grid-template-columns: 22px 1fr auto;
-      gap:10px;
-      align-items:start;
-      padding:10px;
-      border:1px solid var(--line);
-      border-radius:12px;
+      display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:start;
+      padding:10px;border:1px solid var(--line);border-radius:12px;
     }
-    .task input[type="checkbox"]{
-      width:18px;height:18px;margin-top:2px;
-      accent-color: #111;
-    }
-    .task .name{
-      font-weight:700;
-      line-height:1.35;
-    }
-    .task .meta{
-      font-size:12px;
-      color:var(--muted);
-      margin-top:2px;
-      line-height:1.35;
-    }
-    .task .pts{
-      font-weight:900;
-      white-space:nowrap;
-    }
-    .task .pts small{
-      font-weight:700;
-      color:var(--muted);
-    }
+    .task input[type="checkbox"]{width:18px;height:18px;margin-top:2px;accent-color:#111;}
+    .task .name{font-weight:700;line-height:1.35;}
+    .task .meta{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35;}
+    .task .pts{font-weight:900;white-space:nowrap;}
+    .task .pts small{font-weight:700;color:var(--muted);}
+    .task .pts.negative{color:#b91c1c;}
+    .neg-input{width:240px;max-width:100%;}
 
-    .log-top{
+    .divider{
+      margin:12px 0 8px;
+      border-top:1px dashed var(--line);
+      padding-top:10px;
+      color:var(--muted);
+      font-size:12px;
       display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
       justify-content:space-between;
-      margin-bottom:10px;
-    }
-    .log-top .left{
-      display:flex;
-      gap:8px;
+      gap:10px;
       flex-wrap:wrap;
-      align-items:center;
-    }
-    .log-top .right{
-      display:flex;
-      gap:8px;
-      flex-wrap:wrap;
-      align-items:center;
-      justify-content:flex-end;
-    }
-    table{
-      width:100%;
-      border-collapse:collapse;
-      font-size:13px;
-    }
-    th, td{
-      border:1px solid var(--line);
-      padding:8px;
-      vertical-align:top;
-    }
-    th{
-      background:#fafafa;
-      text-align:left;
-      font-weight:800;
-    }
-    .row-actions{
-      display:flex;
-      gap:6px;
-      flex-wrap:wrap;
-    }
-    .muted{color:var(--muted)}
-    .footer-note{
-      margin-top:10px;
-      font-size:12px;
-      color:var(--muted);
     }
 
-    /* 列印（A4 橫式） */
+    .log-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    .log-top .left{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+    .log-top .right{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:flex-end;}
+    table{width:100%;border-collapse:collapse;font-size:13px;}
+    th,td{border:1px solid var(--line);padding:8px;vertical-align:top;}
+    th{background:#fafafa;text-align:left;font-weight:800;}
+    .row-actions{display:flex;gap:6px;flex-wrap:wrap;}
+    .muted{color:var(--muted)}
+    .footer-note{margin-top:10px;font-size:12px;color:var(--muted);}
+
     @media print{
-      body{ background:#fff }
-      .app{ max-width:none; margin:0; padding:0 }
-      .topbar, .controls, .footer-note, .row-actions button, .log-top .right button { display:none !important; }
-      .grid{ grid-template-columns: 1fr 1fr; gap:10px; }
-      .card{ border:1px solid #000; border-top:4px solid #000; border-radius:0; }
-      .task{ border:1px solid #000; border-radius:0; }
-      th, td{ border:1px solid #000; }
-      @page{ size: A4 landscape; margin: 10mm; }
+      body{background:#fff}
+      .app{max-width:none;margin:0;padding:0}
+      .topbar,.controls,.footer-note,.row-actions button,.log-top .right button{display:none !important;}
+      .grid{grid-template-columns:1fr 1fr;gap:10px;}
+      .card{border:1px solid #000;border-top:4px solid #000;border-radius:0;}
+      .task{border:1px solid #000;border-radius:0;}
+      th,td{border:1px solid #000;}
+      @page{size:A4 landscape;margin:10mm;}
     }
   </style>
 </head>
@@ -210,7 +91,7 @@
   <div class="app">
     <div class="topbar">
       <div class="title">
-        <h1>昱橙點數任務制度（四年級）</h1>
+        <h1>昱橙點數任務制度（9歲）</h1>
         <div class="sub">A4 橫式可列印｜勾選後自動算點數｜紀錄存在本機瀏覽器</div>
       </div>
       <div class="controls">
@@ -223,28 +104,28 @@
     </div>
 
     <div class="grid">
-      <!-- 規則/勾選區 -->
       <section class="card" aria-label="任務與點數規則">
         <div class="section-title">
           <h2>任務＋點數規則（固定）</h2>
-          <div class="hint">每一項可勾選計分；「家事／特別任務」可自行填點數</div>
+          <div class="hint">每一項可勾選計分；「家事／特別任務」可自行填點數；可做一次「扣分」並寫原因</div>
         </div>
 
-        <!-- ✅ 任務先寫死在 HTML：不怕 JS 渲染失敗變空白 -->
-        <div class="tasks" id="tasks">
+        <div class="divider">
+          <div><strong>加分</strong></div>
+          <div>做到了就加點</div>
+        </div>
+
+        <!-- ✅ 任務寫死在 HTML：不怕 JS 渲染失敗 -->
+        <div class="tasks" id="tasksPos">
           <div class="task" data-id="t1" data-pts="2">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">完成每日作息（照表走）</div>
-            </div>
+            <div><div class="name">完成每日作息（照表走）</div></div>
             <div class="pts">+2 點</div>
           </div>
 
           <div class="task" data-id="t2" data-pts="2">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">作業完成（不拖延）</div>
-            </div>
+            <div><div class="name">作業完成（不拖延）</div></div>
             <div class="pts">+2 點</div>
           </div>
 
@@ -259,81 +140,61 @@
 
           <div class="task" data-id="t4" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">其它運動（有動就算）</div>
-            </div>
+            <div><div class="name">其它運動（有動就算）</div></div>
             <div class="pts">+1 點</div>
           </div>
 
           <div class="task" data-id="t5" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">牛奶 500cc</div>
-            </div>
+            <div><div class="name">牛奶 500cc</div></div>
             <div class="pts">+1 點</div>
           </div>
 
           <div class="task" data-id="t6" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">吃飯 30 分鐘內完成</div>
-            </div>
+            <div><div class="name">吃飯 30 分鐘內完成</div></div>
             <div class="pts">+1 點</div>
           </div>
 
           <div class="task" data-id="t7" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">外勞叫後 3 分鐘內起床</div>
-            </div>
+            <div><div class="name">外勞叫後 3 分鐘內起床</div></div>
             <div class="pts">+1 點</div>
           </div>
 
           <div class="task" data-id="t8" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">睡覺快速（提醒一次內上床）</div>
-            </div>
+            <div><div class="name">睡覺快速（提醒一次內上床）</div></div>
             <div class="pts">+1 點</div>
           </div>
 
           <div class="task" data-id="t9" data-pts="2">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）</div>
-            </div>
+            <div><div class="name">沖鼻子＋刷牙＋拜拜＋換睡衣（30 分鐘內完成）</div></div>
             <div class="pts">+2 點</div>
           </div>
 
           <div class="task" data-id="t10" data-pts="2">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">閱讀或複習 20 分鐘</div>
-            </div>
+            <div><div class="name">閱讀或複習 20 分鐘</div></div>
             <div class="pts">+2 點</div>
           </div>
 
           <div class="task" data-id="t11" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">預習隔天課程 10–15 分鐘</div>
-            </div>
+            <div><div class="name">預習隔天課程 10–15 分鐘</div></div>
             <div class="pts">+1 點</div>
           </div>
 
           <div class="task" data-id="t12" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">整理書包／書桌／房間</div>
-            </div>
+            <div><div class="name">整理書包／書桌／房間</div></div>
             <div class="pts">+1 點</div>
           </div>
 
           <div class="task" data-id="t13" data-pts="1">
             <input type="checkbox" class="cb" />
-            <div>
-              <div class="name">情緒穩定、不頂嘴一天</div>
-            </div>
+            <div><div class="name">情緒穩定、不頂嘴一天</div></div>
             <div class="pts">+1 點</div>
           </div>
 
@@ -367,9 +228,30 @@
             </div>
           </div>
         </div>
+
+        <div class="divider">
+          <div><strong>扣分（只有一個，寫原因即可）</strong></div>
+          <div>輸入負數（例：-1 / -2 / -3）</div>
+        </div>
+
+        <div class="tasks" id="tasksNeg">
+          <div class="task" data-id="n1" data-custom="1" data-range="-1~-5" data-negative="1">
+            <input type="checkbox" class="cb" />
+            <div>
+              <div class="name">扣分（原因自己寫）</div>
+              <div class="meta">輸入負分（例：-1 / -2 / -3），並備註原因</div>
+              <input type="text" class="note neg-input" placeholder="原因（例：頂嘴/拖延/吵架…）" />
+            </div>
+            <div class="pts negative">
+              <div style="display:grid;gap:6px">
+                <div><small>負分</small></div>
+                <input type="text" class="custom" placeholder="-1~-5" value="-1" style="width:90px" />
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      <!-- 紀錄區 -->
       <section class="card" aria-label="點數紀錄表">
         <div class="section-title">
           <h2>點數紀錄表</h2>
@@ -414,11 +296,12 @@
   </div>
 
 <script>
-  const STORAGE_KEY = "yucheng_orange_points_v2";
+  const STORAGE_KEY = "orange_points_v3"; // v3：加上扣分＋原因
 
   const state = loadState();
 
-  const tasksEl = document.getElementById("tasks");
+  const tasksPosEl = document.getElementById("tasksPos");
+  const tasksNegEl = document.getElementById("tasksNeg");
   const todayTotalEl = document.getElementById("todayTotal");
   const allTotalEl = document.getElementById("allTotal");
   const logBodyEl = document.getElementById("logBody");
@@ -437,7 +320,7 @@
   document.getElementById("btnPrint").addEventListener("click", () => window.print());
 
   document.getElementById("btnResetToday").addEventListener("click", () => {
-    state.today = { checks:{}, custom:{} };
+    state.today = { checks:{}, custom:{}, notes:{} };
     saveState();
     hydrateUIFromState();
     computeTotal();
@@ -483,25 +366,37 @@
   });
 
   function hydrateUIFromState(){
-    const rows = tasksEl.querySelectorAll(".task");
-    rows.forEach(row => {
+    const allRows = document.querySelectorAll(".task");
+    allRows.forEach(row => {
       const id = row.dataset.id;
       const cb = row.querySelector(".cb");
-      const customInput = row.querySelector(".custom");
+      const customInput = row.querySelector("input.custom");
+      const noteInput = row.querySelector("input.note");
 
-      cb.checked = !!state.today.checks[id];
-      cb.addEventListener("change", () => {
-        state.today.checks[id] = cb.checked;
-        saveState();
-        computeTotal();
-      });
+      if (cb){
+        cb.checked = !!state.today.checks[id];
+        cb.addEventListener("change", () => {
+          state.today.checks[id] = cb.checked;
+          saveState();
+          computeTotal();
+        });
+      }
 
       if (customInput){
-        customInput.value = (state.today.custom[id] ?? "");
+        customInput.value = (state.today.custom[id] ?? customInput.value ?? "");
         customInput.addEventListener("input", () => {
           state.today.custom[id] = customInput.value;
           saveState();
           computeTotal();
+        });
+      }
+
+      if (noteInput){
+        noteInput.value = (state.today.notes?.[id] ?? "");
+        noteInput.addEventListener("input", () => {
+          state.today.notes = state.today.notes || {};
+          state.today.notes[id] = noteInput.value;
+          saveState();
         });
       }
     });
@@ -509,11 +404,11 @@
 
   function computeTotal(returnNumber=false){
     let total = 0;
-    const rows = tasksEl.querySelectorAll(".task");
-    rows.forEach(row => {
+
+    // 加分區
+    tasksPosEl.querySelectorAll(".task").forEach(row => {
       const id = row.dataset.id;
-      const checked = !!state.today.checks[id];
-      if (!checked) return;
+      if (!state.today.checks[id]) return;
 
       const isCustom = row.dataset.custom === "1";
       if (!isCustom){
@@ -523,6 +418,16 @@
         const n = parseInt(raw, 10);
         if (!Number.isNaN(n) && n >= 0) total += n;
       }
+    });
+
+    // 扣分區（只有 n1）
+    tasksNegEl.querySelectorAll(".task").forEach(row => {
+      const id = row.dataset.id;
+      if (!state.today.checks[id]) return;
+
+      const raw = (state.today.custom[id] ?? "-1").trim();
+      const n = parseInt(raw, 10);
+      if (!Number.isNaN(n) && n <= 0) total += n; // 必須<=0才扣
     });
 
     todayTotalEl.textContent = total;
@@ -537,8 +442,9 @@
 
   function getCheckedSummary(){
     const parts = [];
-    const rows = tasksEl.querySelectorAll(".task");
-    rows.forEach(row => {
+
+    // 加分摘要
+    tasksPosEl.querySelectorAll(".task").forEach(row => {
       const id = row.dataset.id;
       if (!state.today.checks[id]) return;
 
@@ -554,6 +460,19 @@
         parts.push(`${name}(+${shown})`);
       }
     });
+
+    // 扣分摘要
+    tasksNegEl.querySelectorAll(".task").forEach(row => {
+      const id = row.dataset.id;
+      if (!state.today.checks[id]) return;
+
+      const raw = (state.today.custom[id] ?? "-1").trim();
+      const n = parseInt(raw, 10);
+      const ptsShown = (!Number.isNaN(n) && n <= 0) ? n : 0;
+      const reason = (state.today.notes?.[id] ?? "").trim();
+      parts.push(`扣分(${ptsShown})${reason ? "：" + reason : ""}`);
+    });
+
     return parts.join("；");
   }
 
@@ -611,14 +530,14 @@
   function loadState(){
     try{
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { today:{checks:{}, custom:{}}, logs:[] };
+      if (!raw) return { today:{checks:{}, custom:{}, notes:{}}, logs:[] };
       const parsed = JSON.parse(raw);
       return {
-        today: parsed.today ?? {checks:{}, custom:{}},
+        today: parsed.today ?? {checks:{}, custom:{}, notes:{}},
         logs: Array.isArray(parsed.logs) ? parsed.logs : []
       };
     }catch{
-      return { today:{checks:{}, custom:{}}, logs:[] };
+      return { today:{checks:{}, custom:{}, notes:{}}, logs:[] };
     }
   }
 
